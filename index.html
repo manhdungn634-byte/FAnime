@@ -200,15 +200,18 @@ const touch=()=>{const c=R0('cur');if(!SESS||!c)return;W0('u:'+c+':t',Date.now()
 async function fbAuth(kind,u,pw){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${kind}?key=${FB.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:EM(u),password:pw,returnSecureToken:true})});const d=await r.json();if(!r.ok)throw(d.error&&d.error.message)||'ERR';SESS={uid:d.localId,id:d.idToken,rf:d.refreshToken,exp:Date.now()+(+d.expiresIn-60)*1000};W0('sess',SESS)}
 async function tok(){if(!SESS)throw 0;if(Date.now()>SESS.exp){const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${FB.apiKey}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(SESS.rf)});const d=await r.json();if(!r.ok)throw 0;SESS={uid:d.user_id,id:d.id_token,rf:d.refresh_token,exp:Date.now()+(+d.expires_in-60)*1000};W0('sess',SESS)}return SESS.id}
 const DOC=()=>`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents/aniviet_users/${SESS.uid}`;
-async function push(){if(!cloud()||!SESS)return;const c=R0('cur');if(!c)return;
-  const b={t:R0('u:'+c+':t')||Date.now(),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()};
-  try{await fetch(DOC()+'?updateMask.fieldPaths=data',{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await tok()},body:JSON.stringify({fields:{data:{stringValue:JSON.stringify(b)}}})})}catch(e){}}
+const SYNC={t:0,err:''};
+const fe=st=>st==403?'Firestore chưa cho phép ghi (cần thêm Rules cho aniviet_users)':st==401?'Phiên đăng nhập hết hạn, hãy đăng nhập lại':'Lỗi máy chủ ('+st+')';
+async function push(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)return false;
+  const b={t:R0('u:'+c+':t')||Date.now(),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()},body=JSON.stringify({fields:{data:{stringValue:JSON.stringify(b)}}});
+  try{const r=await fetch(DOC()+'?updateMask.fieldPaths=data',{method:'PATCH',keepalive:body.length<60000,headers:{'Content-Type':'application/json',Authorization:'Bearer '+await tok()},body});
+    if(!r.ok){SYNC.err=fe(r.status);return false}SYNC.t=Date.now();SYNC.err='';return true}catch(e){SYNC.err='Không kết nối được máy chủ';return false}}
 async function pull(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)return false;
   try{const r=await fetch(DOC(),{headers:{Authorization:'Bearer '+await tok()}});
-    if(r.status==404){await push();return false}if(!r.ok)return false;
-    const d=JSON.parse((await r.json()).fields.data.stringValue),lt=R0('u:'+c+':t')||0;
+    if(r.status==404){await push();return false}if(!r.ok){SYNC.err=fe(r.status);return false}
+    const d=JSON.parse((await r.json()).fields.data.stringValue),lt=R0('u:'+c+':t')||0;SYNC.t=Date.now();SYNC.err='';
     if(d.t>lt){['hist','wl','fav','last'].forEach(k=>W0('u:'+c+':'+k,d[k]));if(d.prof)W0('prof:'+c,d.prof);W0('u:'+c+':t',d.t);return true}
-    if(d.t<lt)await push()}catch(e){}return false}
+    if(d.t<lt)await push()}catch(e){SYNC.err='Không kết nối được máy chủ'}return false}
 let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
@@ -292,6 +295,7 @@ function acc(){
   else{const L=at=='fav'?G('fav')||[]:hist();
     b=(at=='hs'&&L.length?`<div class="row2"><span>${L.length} phim đã xem</span><button data-clr>Xóa lịch sử</button></div>`:'')+(L.length?`<div class="grid" style="margin-top:14px">${L.map(pc).join('')}</div>`:`<div class="emp"><h3>${at=='fav'?'Chưa có phim yêu thích':'Chưa có lịch sử xem'}</h3><p>${at=='fav'?'Nhấn ♡ Yêu thích ở trang phim để lưu vào đây.':'Những phim bạn xem sẽ hiện ở đây.'}</p></div>`)}
   $('#app').innerHTML=`<div class="page"><div class="pf" data-ed>${avh(p,72)}<div class="pn"><b>${esc(p.name)}</b><small>${cu?'@'+esc(cu):'Chưa đăng nhập'}</small></div><button class="sm" data-ed>Sửa</button></div>
+  ${cu&&cloud()?`<div class="nt" style="padding:0 12px 8px">☁ ${SYNC.err?'⚠ '+esc(SYNC.err):SYNC.t?'Đã sao lưu lúc '+new Date(SYNC.t).toLocaleTimeString('vi-VN'):'Đang chờ đồng bộ…'}</div>`:''}
   ${cu?'':`<div class="bx"><b>Đăng nhập để sao lưu</b><small>Giữ lịch sử, yêu thích và danh sách theo dõi.</small><div class="cta" style="margin:12px 0 0"><button class="go" data-au="in">Đăng nhập</button><button class="go" style="background:none;border:2px solid var(--or);color:var(--or)" data-au="up">Đăng ký</button></div></div>`}
   <div class="tabs">${[['fav','Yêu thích'],['hs','Lịch sử xem'],['st','Cài đặt']].map(([k,t])=>`<button data-at="${k}" class="${at==k?'on':''}">${t}</button>`).join('')}</div>${b}</div>`}
 function openAuth(m){am=m;$('#sh').classList.add('on');drawAuth()}
@@ -461,7 +465,7 @@ document.addEventListener('click',e=>{
   if(d.ps!==undefined)return saveProf();
   if(d.exp!==undefined)return expData();
   if(d.lo!==undefined){W0('cur',null);SESS=null;try{localStorage.removeItem('sess')}catch(e){}return render()}
-  if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert('Đã đồng bộ');render()});return}
+  if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert(SYNC.err?'Lỗi: '+SYNC.err:'Đã sao lưu lên đám mây');render()});return}
   if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
@@ -495,7 +499,7 @@ document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0]
 addEventListener('scroll',()=>{if(tab=='home')$('#top').classList.toggle('s',scrollY>300)},{passive:true});
 render();
 if(SESS&&cloud())pull().then(c=>c&&render());
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SESS&&cloud())pull().then(c=>c&&render())});
+document.addEventListener('visibilitychange',()=>{if(!SESS||!cloud())return;if(document.hidden)push();else pull().then(c=>c&&render())});
 </script>
 </body>
 </html>
