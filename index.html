@@ -177,7 +177,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
 .rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
 /* ---------- iPad / màn hình rộng ---------- */
-@media(min-width:700px) and (min-height:600px){
+@media(min-width:700px) and (min-height:480px){
   body{font-size:15px}
   #app{max-width:1100px}
   .top{max-width:1100px;padding-left:28px;padding-right:28px;gap:24px}
@@ -276,7 +276,7 @@ let src=G('src')||'all',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('w
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
 const pic=(s,o)=>`<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
-const hb=it=>(innerWidth>=700&&innerHeight>=600)?(it.bigc||it.cov||it.big||it.img):(it.big||it.img);
+const hb=it=>(innerWidth>=700&&innerHeight>=480)?(it.bigc||it.cov||it.big||it.img):(it.big||it.img);
 const norm=(i,sn)=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),bigc:th(img(i.poster_url||i.thumb_url),1280),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src:sn||src};M[key(it)]=it;return it};
 async function listS(sn,p=1,sort,y){
   if(sn=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(i=>norm(i,'kk'));
