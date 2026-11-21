@@ -88,7 +88,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .chips{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none}
 .chips button{flex:none;padding:6px 14px;border-radius:16px;font-size:12px;color:#bbb}
 .chips button.on{background:#27282c;color:#fff}
-.ys{position:sticky;top:calc(54px + env(safe-area-inset-top,0px));background:#000;z-index:8;padding:8px 12px}
+.ys{position:sticky;top:calc(44px + env(safe-area-inset-top,0px));background:#000;z-index:8;padding:16px 12px 8px}
 .ys button{background:#1a1b1f}.ys button.on{background:var(--or);color:#000;font-weight:700}
 .sr{display:flex;gap:12px;padding:6px 12px;align-items:center;cursor:pointer}
 .sr i{width:104px;aspect-ratio:16/9;flex:none;background:var(--card) center/cover}
@@ -336,10 +336,11 @@ const MDP='https://md.manhdungn634.workers.dev',CR='&contentRating[]=safe&conten
 let ml='vi',mo='followedCount',mq='',mp=0,MM={},CH=[],CHi=0,cdir='desc',curM;
 const stv={ongoing:'Đang ra',completed:'Hoàn thành',hiatus:'Tạm ngưng',cancelled:'Đã hủy'};
 async function MJ(u){const url=(MDP||'https://api.mangadex.org')+u;try{return await J(url)}catch(e){if(MDP)throw e;return J('https://api.allorigins.win/raw?url='+encodeURIComponent(url))}}
+const mdi=u=>u&&MDP?MDP+'/proxy?u='+encodeURIComponent(u):u;
 const merr=()=>`<div class="emp"><h3>Không tải được MangaDex</h3><p>Trình duyệt hoặc mạng đang chặn kết nối tới MangaDex. Hãy thử lại sau, hoặc cấu hình proxy MDP trong index.html.</p></div>`;
 const mt=o=>o?(o.vi||o.en||Object.values(o)[0]||''):'';
 const chl=c=>(c.n?'Chương '+c.n:'Oneshot')+(c.t?' – '+c.t:'');
-const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:th(r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',260),ra:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
+const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:mdi(r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:''),ra:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
 const mc=o=>`<div class="pc" data-mg="${o.id}"><i>${pic(o.img,o.ra)}</i><b>${esc(o.name)}</b><p><span>${esc(stv[o.st]||o.st||'')}</span></p></div>`;
 async function mlist(off){const u=`/manga?limit=24&offset=${off}&includes[]=cover_art&availableTranslatedLanguage[]=${ml}${CR}`+(mq?`&title=${encodeURIComponent(mq)}`:`&order[${mo}]=desc`);return(await MJ(u)).data.map(mn)}
 async function mangaView(){
@@ -352,7 +353,7 @@ async function mmore(){
   catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=merr()}}
 function openManga(id){
   const o=curM=MM[id],el=$('#det');cdir='desc';CH=[];el.classList.add('on');el.scrollTop=0;el.onscroll=null;
-  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(th(o.ra.replace('.256.','.512.'),480))}" data-o="${esc(o.ra.replace('.256.','.512.'))}" onerror="this.onerror=null;this.src=this.dataset.o" alt=""></div>
+  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(mdi(o.ra.replace('.256.','.512.')))}" data-o="${esc(o.ra.replace('.256.','.512.'))}" onerror="this.onerror=null;this.src=this.dataset.o" alt=""></div>
   <div class="di" style="margin-top:0"><h1 style="font-size:22px">${esc(o.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(stv[o.st]||o.st||'')}</span>${o.year?'<span>•</span><span>'+o.year+'</span>':''}${o.tags.length?'<span>•</span><span>'+esc(o.tags.join(', '))+'</span>':''}</div><div class="cta" id="mcta" style="margin-top:12px"></div><p class="dd" id="dd">${esc(o.desc)||'Chưa có mô tả.'}</p><button class="mo" data-md>Chi tiết hơn</button></div><div id="chl"><div class="sk"></div></div>`;
   loadCh(id)}
 async function loadCh(id){
@@ -367,7 +368,7 @@ async function readCh(i){
   const c=CH[i];if(!c)return;CHi=i;const el=$('#rd'),bar=`<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span></div>`;
   el.classList.add('on');el.scrollTop=0;el.innerHTML=bar+'<div class="sk" style="height:70vh"></div>';
   try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl;
-    el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
+    el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" ${MDP?`data-p="${esc(mdi(B+'/data-saver/'+h+'/'+f))}" onerror="this.onerror=null;this.src=this.dataset.p"`:''} alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
   catch(e){el.innerHTML=bar+merr()}}
 /* ---------- SEARCH ---------- */
 let sq='',sf='all',sres=[],stm;
