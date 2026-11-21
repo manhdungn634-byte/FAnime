@@ -160,11 +160,13 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 <div id="pl" class="ov"></div>
 <div id="sh" class="ov"></div>
 <script>
+/* ĐỒNG BỘ ĐÁM MÂY (Firebase) – điền 2 giá trị này để đăng nhập được trên nhiều thiết bị */
+const FB={apiKey:'AIzaSyBAHBUrFVD4KQYmhzVUV80TKb0DoQxyftg',projectId:'flixanime-1f434'};
 const KK='https://phimapi.com',NC='https://phim.nguonc.com/api',CDN='https://phimimg.com';
 const $=s=>document.querySelector(s),J=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()};
 const R0=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},W0=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const NS=k=>['hist','wl','last','fav'].includes(k)?'u:'+(R0('cur')||'guest')+':'+k:k;
-const G=k=>R0(NS(k)),S=(k,v)=>W0(NS(k),v);
+const G=k=>R0(NS(k)),S=(k,v)=>{W0(NS(k),v);if(k!='src')touch()};
 ['hist','wl','last'].forEach(k=>{if(R0('u:guest:'+k)==null&&R0(k)!=null)W0('u:guest:'+k,R0(k))});
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const strip=s=>String(s||'').replace(/<[^>]+>/g,'').trim();
@@ -175,6 +177,21 @@ const AVS=[['🦊','#ff640a'],['🐱','#2563eb'],['🐼','#16a34a'],['🐸','#0d
 const prof=()=>{const c=R0('cur');return R0('prof:'+(c||'guest'))||{name:c||'Khách',av:'e:0'}};
 const avh=(p,sz,cls='')=>{const a=p.av||'e:0';let st,tx='';if(a.startsWith('data:'))st=`background:url('${a}') center/cover`;else{const v=AVS[+a.slice(2)]||AVS[0];st='background:'+v[1];tx=v[0]}return`<div class="av ${cls}" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.5)}px;${st}">${tx}</div>`};
 const isF=it=>(G('fav')||[]).some(x=>key(x)==key(it));
+const cloud=()=>!!(FB.apiKey&&FB.projectId),EM=u=>u+'@aniviet.app';
+let SESS=R0('sess'),ptm;
+const touch=()=>{const c=R0('cur');if(!SESS||!c)return;W0('u:'+c+':t',Date.now());clearTimeout(ptm);ptm=setTimeout(push,2000)};
+async function fbAuth(kind,u,pw){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${kind}?key=${FB.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:EM(u),password:pw,returnSecureToken:true})});const d=await r.json();if(!r.ok)throw(d.error&&d.error.message)||'ERR';SESS={uid:d.localId,id:d.idToken,rf:d.refreshToken,exp:Date.now()+(+d.expiresIn-60)*1000};W0('sess',SESS)}
+async function tok(){if(!SESS)throw 0;if(Date.now()>SESS.exp){const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${FB.apiKey}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(SESS.rf)});const d=await r.json();if(!r.ok)throw 0;SESS={uid:d.user_id,id:d.id_token,rf:d.refresh_token,exp:Date.now()+(+d.expires_in-60)*1000};W0('sess',SESS)}return SESS.id}
+const DOC=()=>`https://firestore.googleapis.com/v1/projects/${FB.projectId}/databases/(default)/documents/aniviet_users/${SESS.uid}`;
+async function push(){if(!cloud()||!SESS)return;const c=R0('cur');if(!c)return;
+  const b={t:R0('u:'+c+':t')||Date.now(),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()};
+  try{await fetch(DOC()+'?updateMask.fieldPaths=data',{method:'PATCH',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await tok()},body:JSON.stringify({fields:{data:{stringValue:JSON.stringify(b)}}})})}catch(e){}}
+async function pull(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)return false;
+  try{const r=await fetch(DOC(),{headers:{Authorization:'Bearer '+await tok()}});
+    if(r.status==404){await push();return false}if(!r.ok)return false;
+    const d=JSON.parse((await r.json()).fields.data.stringValue),lt=R0('u:'+c+':t')||0;
+    if(d.t>lt){['hist','wl','fav','last'].forEach(k=>W0('u:'+c+':'+k,d[k]));if(d.prof)W0('prof:'+c,d.prof);W0('u:'+c+':t',d.t);return true}
+    if(d.t<lt)await push()}catch(e){}return false}
 let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
 const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:img(i.thumb_url||i.poster_url),cov:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
@@ -251,18 +268,25 @@ async function simView(){
 let at='fav',am='in',tmpAv;
 function acc(){
   topbar('Tài khoản');const p=prof(),cu=R0('cur');let b='';
-  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
+  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu&&SESS?`<div class="row2"><span>Đồng bộ đám mây</span><button data-sync>Đồng bộ ngay</button></div>`:''}${cloud()?'':`<p class="nt" style="padding:12px">Đồng bộ nhiều thiết bị cần điền cấu hình Firebase ở đầu tệp index.html.</p>`}${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
   else{const L=at=='fav'?G('fav')||[]:hist();
     b=(at=='hs'&&L.length?`<div class="row2"><span>${L.length} phim đã xem</span><button data-clr>Xóa lịch sử</button></div>`:'')+(L.length?`<div class="grid" style="margin-top:14px">${L.map(pc).join('')}</div>`:`<div class="emp"><h3>${at=='fav'?'Chưa có phim yêu thích':'Chưa có lịch sử xem'}</h3><p>${at=='fav'?'Nhấn ♡ Yêu thích ở trang phim để lưu vào đây.':'Những phim bạn xem sẽ hiện ở đây.'}</p></div>`)}
   $('#app').innerHTML=`<div class="page"><div class="pf" data-ed>${avh(p,72)}<div class="pn"><b>${esc(p.name)}</b><small>${cu?'@'+esc(cu):'Chưa đăng nhập'}</small></div><button class="sm" data-ed>Sửa</button></div>
   ${cu?'':`<div class="bx"><b>Đăng nhập để sao lưu</b><small>Giữ lịch sử, yêu thích và danh sách theo dõi.</small><div class="cta" style="margin:12px 0 0"><button class="go" data-au="in">Đăng nhập</button><button class="go" style="background:none;border:2px solid var(--or);color:var(--or)" data-au="up">Đăng ký</button></div></div>`}
   <div class="tabs">${[['fav','Yêu thích'],['hs','Lịch sử xem'],['st','Cài đặt']].map(([k,t])=>`<button data-at="${k}" class="${at==k?'on':''}">${t}</button>`).join('')}</div>${b}</div>`}
 function openAuth(m){am=m;$('#sh').classList.add('on');drawAuth()}
-function drawAuth(){$('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>${am=='in'?'Đăng nhập':'Đăng ký'}</b></div><div class="fm"><p class="nt">Tài khoản được lưu trên thiết bị này. Muốn dùng ở máy khác, hãy Xuất dữ liệu rồi Nhập ở máy mới.</p><input id="u" placeholder="Tên đăng nhập" autocapitalize="none" autocomplete="username"><input id="p" type="password" placeholder="Mật khẩu" autocomplete="${am=='in'?'current-password':'new-password'}">${am=='up'?'<input id="p2" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password">':''}<div class="er2" id="am"></div><button class="big" data-auth>${am=='in'?'Đăng nhập':'Tạo tài khoản'}</button><button class="mo" data-am="${am=='in'?'up':'in'}">${am=='in'?'Chưa có tài khoản? Đăng ký':'Đã có tài khoản? Đăng nhập'}</button></div>`}
+function drawAuth(){$('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>${am=='in'?'Đăng nhập':'Đăng ký'}</b></div><div class="fm"><p class="nt">${cloud()?'Dữ liệu được lưu trên đám mây: đăng nhập ở thiết bị nào cũng thấy lịch sử, yêu thích và danh sách theo dõi.':'Chưa cấu hình đám mây nên tài khoản chỉ lưu trên thiết bị này.'}</p><input id="u" placeholder="Tên đăng nhập" autocapitalize="none" autocomplete="username"><input id="p" type="password" placeholder="Mật khẩu" autocomplete="${am=='in'?'current-password':'new-password'}">${am=='up'?'<input id="p2" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password">':''}<div class="er2" id="am"></div><button class="big" data-auth>${am=='in'?'Đăng nhập':'Tạo tài khoản'}</button><button class="mo" data-am="${am=='in'?'up':'in'}">${am=='in'?'Chưa có tài khoản? Đăng ký':'Đã có tài khoản? Đăng nhập'}</button></div>`}
 async function hp(pw,u){const b=new TextEncoder().encode('ani:'+u+':'+pw);if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}let h=5381;for(const c of b)h=(h*33^c)>>>0;return'x'+h}
 async function doAuth(){
   const u=$('#u').value.trim().toLowerCase(),pw=$('#p').value,m=t=>$('#am').textContent=t,us=R0('users')||{};
   if(!/^[a-z0-9_.]{3,20}$/.test(u))return m('Tên đăng nhập 3–20 ký tự: chữ thường, số, dấu _ hoặc .');
+  if(cloud()){
+    if(am=='up'){if(pw.length<6)return m('Mật khẩu tối thiểu 6 ký tự');if(pw!=$('#p2').value)return m('Mật khẩu nhập lại chưa khớp')}
+    m('Đang xử lý…');
+    try{await fbAuth(am=='up'?'signUp':'signInWithPassword',u,pw)}catch(e){return m(/EXISTS/.test(e)?'Tên đăng nhập đã tồn tại':/WEAK/.test(e)?'Mật khẩu tối thiểu 6 ký tự':/INVALID|NOT_FOUND|PASSWORD/.test(e)?'Sai tên đăng nhập hoặc mật khẩu':'Không kết nối được máy chủ')}
+    if(am=='up'){['hist','wl','fav','last'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});const g=R0('prof:guest');W0('prof:'+u,{name:g&&g.name!='Khách'?g.name:u,av:g?g.av:'e:0'});W0('cur',u);W0('u:'+u+':t',Date.now());await push()}
+    else{W0('cur',u);await pull();if(!R0('prof:'+u))W0('prof:'+u,{name:u,av:'e:0'})}
+    $('#sh').classList.remove('on');return render()}
   if(am=='up'){
     if(pw.length<6)return m('Mật khẩu tối thiểu 6 ký tự');
     if(pw!=$('#p2').value)return m('Mật khẩu nhập lại chưa khớp');
@@ -274,7 +298,7 @@ async function doAuth(){
   W0('cur',u);$('#sh').classList.remove('on');render()}
 function openEdit(){const p=prof();tmpAv=p.av||'e:0';$('#sh').classList.add('on');
   $('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>Chỉnh sửa hồ sơ</b></div><div class="fm" style="align-items:center"><div id="pv">${avh({av:tmpAv},96)}</div><div class="avg">${AVS.map((a,i)=>`<button data-pa="e:${i}" aria-label="Avatar ${i+1}">${avh({av:'e:'+i},48)}</button>`).join('')}</div><label class="up">Tải ảnh lên<input type="file" id="fi" accept="image/*" hidden></label><input id="dn" placeholder="Tên hiển thị" maxlength="24" value="${esc(p.name)}"><button class="big" data-ps>Lưu</button></div>`}
-function saveProf(){const n=$('#dn').value.trim()||prof().name;W0('prof:'+(R0('cur')||'guest'),{name:n,av:tmpAv});$('#sh').classList.remove('on');render()}
+function saveProf(){const n=$('#dn').value.trim()||prof().name;W0('prof:'+(R0('cur')||'guest'),{name:n,av:tmpAv});touch();$('#sh').classList.remove('on');render()}
 function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='aniviet-backup.json';a.click()}
 function impData(t){try{const d=JSON.parse(t);if(!d||d.v!==1)throw 0;
   for(const k of['hist','wl','fav']){const c=G(k)||[],sn=new Set(c.map(key));S(k,c.concat((d[k]||[]).filter(x=>x&&x.slug&&!sn.has(key(x)))))}
@@ -303,11 +327,11 @@ function rs(){
 let D,CI,sI=0,eI=0;
 async function openDet(it){
   CI=it;const el=$('#det');el.classList.add('on');el.scrollTop=0;
-  el.innerHTML=`<div class="sk" style="height:70vh;margin:0"></div><div class="top" style="position:absolute;background:none;color:#fff"><button data-dc>${I('x')}</button><span class="ttl"></span>${I('cast')}</div>`;
+  el.innerHTML=`<div class="sk" style="height:70vh;margin:0"></div><div class="top" style="position:absolute;background:none;color:#fff"><button data-dc>${I('x')}</button><span class="ttl"></span></div>`;
   try{D=await detail(it)}catch(e){el.innerHTML=`<div class="top" style="position:absolute"><button data-dc>${I('x')}</button></div>`+err();return}
   const h=hist().filter(x=>key(x)!=key(it));h.unshift(it);S('hist',h.slice(0,40));
   sI=0;eI=0;const st=D.rate?Math.round(D.rate/2):0;
-  el.innerHTML=`<div class="top" id="dtop" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span>${I('cast')}</div>
+  el.innerHTML=`<div class="top" id="dtop" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span></div>
   <div class="dh" style="background-image:url('${esc(it.img)}')"></div>
   <div class="di"><h1>${esc(it.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(it.year||D.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${D.cats.length?'<span>•</span><span>'+esc(D.cats.slice(0,4).join(', '))+'</span>':''}</div>
   ${D.rate?`<div class="st" style="justify-content:center"><b>${'★'.repeat(st)}${'☆'.repeat(5-st)}</b><span>Trung bình: <b style="font-size:11px;letter-spacing:0;color:#fff">${D.rate.toFixed(1)}</b>${D.votes?' ('+D.votes+')':''}</span></div>`:''}
@@ -355,7 +379,7 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -376,7 +400,8 @@ document.addEventListener('click',e=>{
   if(d.pa){tmpAv=d.pa;$('#pv').innerHTML=avh({av:tmpAv},96);return}
   if(d.ps!==undefined)return saveProf();
   if(d.exp!==undefined)return expData();
-  if(d.lo!==undefined){W0('cur',null);return render()}
+  if(d.lo!==undefined){W0('cur',null);SESS=null;try{localStorage.removeItem('sess')}catch(e){}return render()}
+  if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert('Đã đồng bộ');render()});return}
   if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
   if(d.yr!==undefined){yr=d.yr;return simView()}
   if(d.src){src=d.src;S('src',src);return acc()}
@@ -397,6 +422,8 @@ document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0]
   if(e.target.id=='imp')f.text().then(impData);
   if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
 render();
+if(SESS&&cloud())pull().then(c=>c&&render());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SESS&&cloud())pull().then(c=>c&&render())});
 </script>
 </body>
 </html>
