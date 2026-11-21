@@ -9,9 +9,9 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="AniViet">
+<meta name="apple-mobile-web-app-title" content="FAnime">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>AniViet</title>
+<title>FAnime</title>
 <link rel="preconnect" href="https://wsrv.nl"><link rel="dns-prefetch" href="https://phimimg.com"><link rel="dns-prefetch" href="https://uploads.mangadex.org">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -176,6 +176,53 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 #rp img{display:block;width:100%;min-height:320px;background:#0b0b0c}
 .rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
 .rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
+/* ---------- iPad / màn hình rộng ---------- */
+@media(min-width:768px){
+  body{font-size:15px}
+  #app{max-width:1100px}
+  .top{max-width:1100px;padding-left:28px;padding-right:28px;gap:24px}
+  .ttl{padding-left:96px;font-size:18px}
+  nav{left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:560px;border:1px solid #26262b;border-radius:20px;padding-bottom:0;background:#101013f2;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  nav button{font-size:12px;padding:11px 0 10px}
+  #app{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .hero{height:min(48vw,540px);min-height:420px}
+  .hero::after{background:linear-gradient(90deg,rgba(0,0,0,.85) 0,rgba(0,0,0,.25) 55%,transparent 80%),linear-gradient(transparent 55%,#000 96%),linear-gradient(rgba(0,0,0,.5),transparent 18%)}
+  .hc{right:auto;max-width:620px;padding:0 28px 8px}
+  .hc h1{font-size:40px;margin-bottom:10px}
+  .mt{font-size:13px}.bd{font-size:11px}
+  .ds{font-size:14px;min-height:0;-webkit-line-clamp:3}
+  .cta{max-width:460px}
+  .go{height:50px;font-size:15px}.bm{height:50px;width:50px}
+  .sg{justify-content:flex-start;padding:0}.sg b{max-width:56px}
+  h2{font-size:19px;padding:26px 28px 12px}
+  .rail{padding:0 28px;gap:14px}
+  .pc{flex:0 0 min(16vw,168px)}
+  .lc{flex:0 0 min(30vw,300px)}
+  .pc b,.lc b{font-size:13px}.pc p,.lc p{font-size:12px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 16px;padding:0 28px}
+  .grid.l{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .spot{display:grid;grid-template-columns:1.15fr 1fr;gap:4px 28px;padding:28px 28px 0;align-content:start}
+  .spot i{grid-row:1/8;aspect-ratio:16/9}
+  .spot h3{font-size:22px;margin-top:0}
+  .tabs{padding:0 20px}.tabs button{font-size:14px;padding:12px 16px}
+  .chips{padding:12px 28px}.chips button{font-size:13px;padding:8px 18px}
+  .ys{padding:16px 28px 8px}
+  .sb{padding-left:28px;padding-right:28px}.sb label{height:44px}
+  .pf{padding:16px 28px}.bx{margin:4px 28px 14px}.row2{padding:16px 28px}.emp{padding-top:80px}
+  .ov{max-width:820px;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
+  #pl{max-width:960px}#sh{max-width:560px}#cp{max-width:560px}
+  .dh{height:min(52vw,440px)}
+  .di{padding:0 28px;margin-top:-90px}.di h1{font-size:34px}
+  .dd{font-size:14px}.dt{padding:0 20px}.dt button{font-size:14px}
+  .er{padding:10px 20px}.er .th{width:30%}.er .x b{font-size:14px}
+  .sv{padding:16px 20px}.fx{padding-left:20px;padding-right:20px}
+  .sr{padding:8px 28px}.sr i{width:170px}.sr b{font-size:15px}
+  .cr{padding:15px 24px}.cr b{font-size:15px}
+  .mh img{max-width:220px}
+  .pi{padding:18px 24px}.pi h1{font-size:18px}
+  .rbar{padding-left:20px;padding-right:20px;font-size:15px}
+}
+@media(min-width:1100px){.pc{flex:0 0 150px}.lc{flex:0 0 280px}}
 @media(prefers-reduced-motion:reduce){.hs,.ov{transition:none}.sg b.on i{animation-duration:.01s}}
 </style>
 </head>
@@ -229,7 +276,8 @@ let src=G('src')||'all',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('w
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
 const pic=(s,o)=>`<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
-const norm=(i,sn)=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src:sn||src};M[key(it)]=it;return it};
+const hb=it=>innerWidth>=768?(it.bigc||it.cov||it.big||it.img):(it.big||it.img);
+const norm=(i,sn)=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),bigc:th(img(i.poster_url||i.thumb_url),1280),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src:sn||src};M[key(it)]=it;return it};
 async function listS(sn,p=1,sort,y){
   if(sn=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(i=>norm(i,'kk'));
   const q=sort=='view'?p+1:p;
@@ -269,7 +317,7 @@ async function home(){
   try{
     const [a,b,c]=await Promise.all([list(1),list(1,'view'),list(3)]);
     hl=a.slice(0,6);hi=0;const h=hist(),sp=c[1]||b[0];
-    $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" ${i<2?`style="background-image:url('${esc(it.big||it.img)}')"`:`data-bg="${esc(it.big||it.img)}"`}></div>`).join('')}<div class="hc" id="hc"></div></div>
+    $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" ${i<2?`style="background-image:url('${esc(hb(it))}')"`:`data-bg="${esc(hb(it))}"`}></div>`).join('')}<div class="hc" id="hc"></div></div>
     <h2>Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
     <h2>Mới cập nhật</h2><div class="rail">${a.map(lc).join('')}</div>
     ${h.length?`<h2>Tiếp tục xem</h2><div class="rail">${h.map(lc).join('')}</div>`:''}
@@ -343,7 +391,7 @@ async function doAuth(){
 function openEdit(){const p=prof();tmpAv=p.av||'e:0';$('#sh').classList.add('on');
   $('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>Chỉnh sửa hồ sơ</b></div><div class="fm" style="align-items:center"><div id="pv">${avh({av:tmpAv},96)}</div><div class="avg">${AVS.map((a,i)=>`<button data-pa="e:${i}" aria-label="Avatar ${i+1}">${avh({av:'e:'+i},48)}</button>`).join('')}</div><label class="up">Tải ảnh lên<input type="file" id="fi" accept="image/*" hidden></label><input id="dn" placeholder="Tên hiển thị" maxlength="24" value="${esc(p.name)}"><button class="big" data-ps>Lưu</button></div>`}
 function saveProf(){const n=$('#dn').value.trim()||prof().name;W0('prof:'+(R0('cur')||'guest'),{name:n,av:tmpAv});touch();$('#sh').classList.remove('on');render()}
-function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last(),mhist:G('mhist')||[]},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='aniviet-backup.json';a.click()}
+function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last(),mhist:G('mhist')||[]},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='fanime-backup.json';a.click()}
 function impData(t){try{const d=JSON.parse(t);if(!d||d.v!==1)throw 0;
   for(const k of['hist','wl','fav']){const c=G(k)||[],sn=new Set(c.map(key));S(k,c.concat((d[k]||[]).filter(x=>x&&x.slug&&!sn.has(key(x)))))}
   S('last',Object.assign({},d.last||{},G('last')||{}));
@@ -428,7 +476,7 @@ async function openDet(it){
   const h=hist().filter(x=>key(x)!=key(it));h.unshift(it);S('hist',h.slice(0,40));
   sI=0;eI=0;const st=D.rate?Math.round(D.rate/2):0;
   el.innerHTML=`<div class="top" id="dtop" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span></div>
-  <div class="dh" style="background-image:url('${esc(it.big||it.img)}')"></div>
+  <div class="dh" style="background-image:url('${esc(hb(it))}')"></div>
   <div class="di"><h1>${esc(it.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(it.year||D.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${D.cats.length?'<span>•</span><span>'+esc(D.cats.slice(0,4).join(', '))+'</span>':''}</div>
   ${D.rate?`<div class="st" style="justify-content:center"><b>${'★'.repeat(st)}${'☆'.repeat(5-st)}</b><span>Trung bình: <b style="font-size:11px;letter-spacing:0;color:#fff">${D.rate.toFixed(1)}</b>${D.votes?' ('+D.votes+')':''}</span></div>`:''}
   <div class="ac"><button data-sv="${key(it)}" id="sv2">${I(hasK(it)?'bm':'plus',22)}Danh sách</button><button data-fv="${key(it)}">${I(isF(it)?'heartf':'heart',22)}Yêu thích</button><button data-share>${I('share',22)}Chia sẻ</button></div>
