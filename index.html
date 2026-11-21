@@ -71,7 +71,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .grid .pc,.grid .lc{flex:none;width:auto}.grid.l{grid-template-columns:1fr 1fr}
 .more{display:block;margin:20px auto;padding:10px 26px;border:2px solid var(--or);color:var(--or);font-weight:700;border-radius:3px}
 .page{padding-top:calc(56px + env(safe-area-inset-top,0px))}
-.tabs{display:flex;border-bottom:1px solid #222;padding:0 4px}
+.tabs{overflow-x:auto;scrollbar-width:none;white-space:nowrap;display:flex;border-bottom:1px solid #222;padding:0 4px}
 .tabs button{padding:10px 12px;font-size:12px;font-weight:700;color:#ddd;border-bottom:3px solid transparent}
 .tabs button.on{border-color:var(--or)}
 .emp{text-align:center;padding:60px 16px 0}
@@ -87,6 +87,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .chips{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none}
 .chips button{flex:none;padding:6px 14px;border-radius:16px;font-size:12px;color:#bbb}
 .chips button.on{background:#27282c;color:#fff}
+.sc button.on{background:var(--or);color:#000;font-weight:700}
 .ys{position:sticky;top:calc(44px + env(safe-area-inset-top,0px));background:#000;z-index:8;padding:16px 12px 8px}
 .ys button{background:#1a1b1f}.ys button.on{background:var(--or);color:#000;font-weight:700}
 .sr{display:flex;gap:12px;padding:6px 12px;align-items:center;cursor:pointer}
@@ -158,9 +159,12 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .mb{position:absolute;inset:-24px;background:center/cover;filter:blur(22px) brightness(.45)}
 .mh img{position:relative;width:42%;max-width:190px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;background:var(--card)}
 .cr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 12px;border-bottom:1px solid #1d1d20;cursor:pointer}
+.cr.rdd b{color:var(--mu)}
 .cr b{display:block;font-weight:500;font-size:13px}.cr small{color:var(--mu);font-size:11px}
 .rbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:#000e;font-weight:700;font-size:13px}
-.rbar span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rbar span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rbar button{display:flex;padding:4px}.rbar button:disabled{opacity:.3}
+#cp{z-index:36}.cr.cur b{color:var(--or)}
 #rp img{display:block;width:100%;min-height:320px;background:#0b0b0c}
 .rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
 .rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
@@ -175,6 +179,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 <div id="det" class="ov"></div>
 <div id="pl" class="ov"></div>
 <div id="rd" class="ov"></div>
+<div id="cp" class="ov"></div>
 <div id="sh" class="ov"></div>
 <script>
 /* ĐỒNG BỘ ĐÁM MÂY (Firebase) – điền 2 giá trị này để đăng nhập được trên nhiều thiết bị */
@@ -182,12 +187,12 @@ const FB={apiKey:'AIzaSyBAHBUrFVD4KQYmhzVUV80TKb0DoQxyftg',projectId:'flixanime-
 const KK='https://phimapi.com',NC='https://phim.nguonc.com/api',CDN='https://phimimg.com';
 const $=s=>document.querySelector(s),J=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()};
 const R0=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},W0=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const NS=k=>['hist','wl','last','fav'].includes(k)?'u:'+(R0('cur')||'guest')+':'+k:k;
+const NS=k=>['hist','wl','last','fav','mhist'].includes(k)?'u:'+(R0('cur')||'guest')+':'+k:k;
 const G=k=>R0(NS(k)),S=(k,v)=>{W0(NS(k),v);if(k!='src')touch()};
 ['hist','wl','last'].forEach(k=>{if(R0('u:guest:'+k)==null&&R0(k)!=null)W0('u:guest:'+k,R0(k))});
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const strip=s=>String(s||'').replace(/<[^>]+>/g,'').trim();
-const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',book:'<path d="M12 7c-1.5-1.5-4-2-8-2v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2V5c-4 0-6.5.5-8 2zM12 7v13"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>',heart:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z"/>',heartf:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z" fill="currentColor"/>'};
+const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',cl:'<path d="M15 5l-7 7 7 7"/>',cr:'<path d="M9 5l7 7-7 7"/>',book:'<path d="M12 7c-1.5-1.5-4-2-8-2v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2V5c-4 0-6.5.5-8 2zM12 7v13"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>',heart:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z"/>',heartf:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z" fill="currentColor"/>'};
 const I=(n,s=24)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
 const img=p=>!p?'':/^https?:/.test(p)?p:CDN+(p.includes('/')?'/':'/uploads/movies/')+p.replace(/^\//,'');
 const AVS=[['🦊','#ff640a'],['🐱','#2563eb'],['🐼','#16a34a'],['🐸','#0d9488'],['🦄','#c026d3'],['🐲','#dc2626'],['👾','#7c3aed'],['🌸','#db2777']];
@@ -203,26 +208,32 @@ const DOC=()=>`https://firestore.googleapis.com/v1/projects/${FB.projectId}/data
 const SYNC={t:0,err:''};
 const fe=st=>st==403?'Firestore chưa cho phép ghi (cần thêm Rules cho aniviet_users)':st==401?'Phiên đăng nhập hết hạn, hãy đăng nhập lại':'Lỗi máy chủ ('+st+')';
 async function push(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)return false;
-  const b={t:R0('u:'+c+':t')||Date.now(),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()},body=JSON.stringify({fields:{data:{stringValue:JSON.stringify(b)}}});
+  const b={t:R0('u:'+c+':t')||Date.now(),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last(),mhist:G('mhist')||[]},body=JSON.stringify({fields:{data:{stringValue:JSON.stringify(b)}}});
   try{const r=await fetch(DOC()+'?updateMask.fieldPaths=data',{method:'PATCH',keepalive:body.length<60000,headers:{'Content-Type':'application/json',Authorization:'Bearer '+await tok()},body});
     if(!r.ok){SYNC.err=fe(r.status);return false}SYNC.t=Date.now();SYNC.err='';return true}catch(e){SYNC.err='Không kết nối được máy chủ';return false}}
 async function pull(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)return false;
   try{const r=await fetch(DOC(),{headers:{Authorization:'Bearer '+await tok()}});
     if(r.status==404){await push();return false}if(!r.ok){SYNC.err=fe(r.status);return false}
     const d=JSON.parse((await r.json()).fields.data.stringValue),lt=R0('u:'+c+':t')||0;SYNC.t=Date.now();SYNC.err='';
-    if(d.t>lt){['hist','wl','fav','last'].forEach(k=>W0('u:'+c+':'+k,d[k]));if(d.prof)W0('prof:'+c,d.prof);W0('u:'+c+':t',d.t);return true}
+    if(d.t>lt){['hist','wl','fav','last','mhist'].forEach(k=>{if(d[k]!==undefined)W0('u:'+c+':'+k,d[k])});if(d.prof)W0('prof:'+c,d.prof);W0('u:'+c+':t',d.t);return true}
     if(d.t<lt)await push()}catch(e){SYNC.err='Không kết nối được máy chủ'}return false}
-let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
+let src=G('src')||'all',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
 const pic=(s,o)=>`<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
-const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
-async function list(p=1,sort,y){
-  if(src=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(norm);
-  return(await J(y?`${NC}/films/nam-phat-hanh/${y}?page=${p}`:`${NC}/films/danh-sach/hoat-hinh?page=${p}`)).items.map(norm)}
-async function find(k){
-  if(src=='kk')return(await J(`${KK}/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&limit=24`)).data.items.filter(i=>!i.type||i.type=='hoathinh').map(norm);
-  return(await J(`${NC}/films/search?keyword=${encodeURIComponent(k)}`)).items.map(norm)}
+const norm=(i,sn)=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src:sn||src};M[key(it)]=it;return it};
+async function listS(sn,p=1,sort,y){
+  if(sn=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(i=>norm(i,'kk'));
+  const q=sort=='view'?p+1:p;
+  return(await J(y?`${NC}/films/nam-phat-hanh/${y}?page=${p}`:`${NC}/films/danh-sach/hoat-hinh?page=${q}`)).items.map(i=>norm(i,'nc'))}
+async function findS(sn,k){
+  if(sn=='kk')return(await J(`${KK}/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&limit=24`)).data.items.filter(i=>!i.type||i.type=='hoathinh').map(i=>norm(i,'kk'));
+  return(await J(`${NC}/films/search?keyword=${encodeURIComponent(k)}`)).items.map(i=>norm(i,'nc'))}
+const nk=n=>String(n||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function merge(a,b){const seen=new Set(),o=[];for(let i=0;i<Math.max(a.length,b.length);i++)for(const x of[a[i],b[i]]){if(!x)continue;const k=nk(x.name);if(seen.has(k))continue;seen.add(k);o.push(x)}return o}
+async function both(f){const r=await Promise.allSettled([f('kk'),f('nc')]);if(r.every(x=>x.status!='fulfilled'))throw 0;const g=x=>x.status=='fulfilled'?x.value:[];return merge(g(r[0]),g(r[1]))}
+const list=(p=1,sort,y)=>src=='all'?both(n=>listS(n,p,sort,y)):listS(src,p,sort,y);
+const find=k=>src=='all'?both(n=>findS(n,k)):findS(src,k);
 async function detail(it){
   const k=key(it);if(DC[k])return DC[k];let d;
   if(it.src=='kk'){const r=await J(`${KK}/phim/${it.slug}`),m=r.movie;
@@ -236,7 +247,7 @@ const epn=n=>/^\d+$/.test(String(n).trim())?'T'+n:n;
 const hasK=it=>wl().some(x=>key(x)==key(it));
 const cta=it=>{const l=last()[key(it)];return`<div class="cta"><button class="go" data-go="${key(it)}">${I('play',18)}${l?'Xem tiếp '+esc(l.n):'Bắt đầu xem T1'}</button><button class="bm ${hasK(it)?'on':''}" data-sv="${key(it)}" aria-label="Theo dõi">${I('bm',20)}</button></div>`};
 const dots=`<span data-menu>${I('more',18)}</span>`;
-const pc=it=>`<div class="pc" data-k="${key(it)}"><i>${pic(it.img,it.ra)}</i><b>${esc(it.name)}</b><p><span>${esc(it.lang)}</span>${dots}</p></div>`;
+const pc=it=>`<div class="pc" data-k="${key(it)}"><i>${pic(it.img,it.ra)}</i><b>${esc(it.name)}</b><p><span>${esc(it.lang)}${src=='all'?' · '+(it.src=='kk'?'KK':'NC'):''}</span>${dots}</p></div>`;
 const lc=it=>`<div class="lc" data-k="${key(it)}"><i>${pic(it.cov,it.rb)}</i><b>${esc(it.name)}</b><p><span>${esc(it.sub)}</span>${dots}</p></div>`;
 const sk='<div class="sk" style="height:70vh;margin:0;border-radius:0"></div>';
 const err=()=>`<div class="emp"><h3>Không tải được dữ liệu</h3><p>Hãy kiểm tra mạng hoặc đổi nguồn ở mục Tài khoản.</p></div>`;
@@ -248,10 +259,10 @@ function topbar(title){$('#top').className='top'+(title?' s':'');const r=`<butto
 async function home(){
   topbar();$('#app').innerHTML=sk;
   try{
-    const [a,b,c]=await Promise.all([list(1),src=='kk'?list(1,'view'):list(2),list(3)]);
+    const [a,b,c]=await Promise.all([list(1),list(1,'view'),list(3)]);
     hl=a.slice(0,6);hi=0;const h=hist(),sp=c[1]||b[0];
     $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" ${i<2?`style="background-image:url('${esc(it.big||it.img)}')"`:`data-bg="${esc(it.big||it.img)}"`}></div>`).join('')}<div class="hc" id="hc"></div></div>
-    <h2>Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
+    <div class="chips sc">${[['all','Cả hai nguồn'],['kk','KKPhim'],['nc','NguonC']].map(([k,t])=>`<button data-src="${k}" class="${src==k?'on':''}">${t}</button>`).join('')}</div><h2 style="padding-top:4px">Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
     <h2>Mới cập nhật</h2><div class="rail">${a.map(lc).join('')}</div>
     ${h.length?`<h2>Tiếp tục xem</h2><div class="rail">${h.map(lc).join('')}</div>`:''}
     <div class="spot" id="spot"><i data-k="${key(sp)}" style="background-image:url('${esc(sp.cov)}')"></i><h3>${esc(sp.name)}</h3><div class="ln"></div><div class="mt"><span class="bd">${esc(sp.year||'HD')}</span><span>${esc(sp.lang)}</span></div><p class="ds" id="spd"></p>${cta(sp)}</div>
@@ -291,13 +302,14 @@ async function simView(){
 let at='fav',am='in',tmpAv;
 function acc(){
   topbar('Tài khoản');const p=prof(),cu=R0('cur');let b='';
-  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu&&SESS?`<div class="row2"><span>Đồng bộ đám mây</span><button data-sync>Đồng bộ ngay</button></div>`:''}${cloud()?'':`<p class="nt" style="padding:12px">Đồng bộ nhiều thiết bị cần điền cấu hình Firebase ở đầu tệp index.html.</p>`}${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
+  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['all','kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='all'?'Cả hai nguồn':x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu&&SESS?`<div class="row2"><span>Đồng bộ đám mây</span><button data-sync>Đồng bộ ngay</button></div>`:''}${cloud()?'':`<p class="nt" style="padding:12px">Đồng bộ nhiều thiết bị cần điền cấu hình Firebase ở đầu tệp index.html.</p>`}${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
+  else if(at=='mh'){const L=mh();b=L.length?`<div class="row2"><span>${L.length} truyện đã đọc</span><button data-clm>Xóa lịch sử</button></div><div class="grid" style="margin-top:14px">${L.map(mhc).join('')}</div>`:`<div class="emp"><h3>Chưa có lịch sử đọc</h3><p>Những truyện bạn đọc ở MangaDEX sẽ hiện ở đây.</p></div>`}
   else{const L=at=='fav'?G('fav')||[]:hist();
     b=(at=='hs'&&L.length?`<div class="row2"><span>${L.length} phim đã xem</span><button data-clr>Xóa lịch sử</button></div>`:'')+(L.length?`<div class="grid" style="margin-top:14px">${L.map(pc).join('')}</div>`:`<div class="emp"><h3>${at=='fav'?'Chưa có phim yêu thích':'Chưa có lịch sử xem'}</h3><p>${at=='fav'?'Nhấn ♡ Yêu thích ở trang phim để lưu vào đây.':'Những phim bạn xem sẽ hiện ở đây.'}</p></div>`)}
   $('#app').innerHTML=`<div class="page"><div class="pf" data-ed>${avh(p,72)}<div class="pn"><b>${esc(p.name)}</b><small>${cu?'@'+esc(cu):'Chưa đăng nhập'}</small></div><button class="sm" data-ed>Sửa</button></div>
   ${cu&&cloud()?`<div class="nt" style="padding:0 12px 8px">☁ ${SYNC.err?'⚠ '+esc(SYNC.err):SYNC.t?'Đã sao lưu lúc '+new Date(SYNC.t).toLocaleTimeString('vi-VN'):'Đang chờ đồng bộ…'}</div>`:''}
   ${cu?'':`<div class="bx"><b>Đăng nhập để sao lưu</b><small>Giữ lịch sử, yêu thích và danh sách theo dõi.</small><div class="cta" style="margin:12px 0 0"><button class="go" data-au="in">Đăng nhập</button><button class="go" style="background:none;border:2px solid var(--or);color:var(--or)" data-au="up">Đăng ký</button></div></div>`}
-  <div class="tabs">${[['fav','Yêu thích'],['hs','Lịch sử xem'],['st','Cài đặt']].map(([k,t])=>`<button data-at="${k}" class="${at==k?'on':''}">${t}</button>`).join('')}</div>${b}</div>`}
+  <div class="tabs">${[['fav','Yêu thích'],['hs','Lịch sử xem'],['mh','Lịch sử đọc'],['st','Cài đặt']].map(([k,t])=>`<button data-at="${k}" class="${at==k?'on':''}">${t}</button>`).join('')}</div>${b}</div>`}
 function openAuth(m){am=m;$('#sh').classList.add('on');drawAuth()}
 function drawAuth(){$('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>${am=='in'?'Đăng nhập':'Đăng ký'}</b></div><div class="fm"><p class="nt">${cloud()?'Dữ liệu được lưu trên đám mây: đăng nhập ở thiết bị nào cũng thấy lịch sử, yêu thích và danh sách theo dõi.':'Chưa cấu hình đám mây nên tài khoản chỉ lưu trên thiết bị này.'}</p><input id="u" placeholder="Tên đăng nhập" autocapitalize="none" autocomplete="username"><input id="p" type="password" placeholder="Mật khẩu" autocomplete="${am=='in'?'current-password':'new-password'}">${am=='up'?'<input id="p2" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password">':''}<div class="er2" id="am"></div><button class="big" data-auth>${am=='in'?'Đăng nhập':'Tạo tài khoản'}</button><button class="mo" data-am="${am=='in'?'up':'in'}">${am=='in'?'Chưa có tài khoản? Đăng ký':'Đã có tài khoản? Đăng nhập'}</button></div>`}
 async function hp(pw,u){const b=new TextEncoder().encode('ani:'+u+':'+pw);if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}let h=5381;for(const c of b)h=(h*33^c)>>>0;return'x'+h}
@@ -308,7 +320,7 @@ async function doAuth(){
     if(am=='up'){if(pw.length<6)return m('Mật khẩu tối thiểu 6 ký tự');if(pw!=$('#p2').value)return m('Mật khẩu nhập lại chưa khớp')}
     m('Đang xử lý…');
     try{await fbAuth(am=='up'?'signUp':'signInWithPassword',u,pw)}catch(e){return m(/EXISTS/.test(e)?'Tên đăng nhập đã tồn tại':/WEAK/.test(e)?'Mật khẩu tối thiểu 6 ký tự':/INVALID|NOT_FOUND|PASSWORD/.test(e)?'Sai tên đăng nhập hoặc mật khẩu':'Không kết nối được máy chủ')}
-    if(am=='up'){['hist','wl','fav','last'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});const g=R0('prof:guest');W0('prof:'+u,{name:g&&g.name!='Khách'?g.name:u,av:g?g.av:'e:0'});W0('cur',u);W0('u:'+u+':t',Date.now());await push()}
+    if(am=='up'){['hist','wl','fav','last','mhist'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});const g=R0('prof:guest');W0('prof:'+u,{name:g&&g.name!='Khách'?g.name:u,av:g?g.av:'e:0'});W0('cur',u);W0('u:'+u+':t',Date.now());await push()}
     else{W0('cur',u);await pull();if(!R0('prof:'+u))W0('prof:'+u,{name:u,av:'e:0'})}
     $('#sh').classList.remove('on');return render()}
   if(am=='up'){
@@ -316,21 +328,23 @@ async function doAuth(){
     if(pw!=$('#p2').value)return m('Mật khẩu nhập lại chưa khớp');
     if(us[u])return m('Tên đăng nhập đã tồn tại');
     us[u]={h:await hp(pw,u)};W0('users',us);
-    ['hist','wl','fav','last'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});
+    ['hist','wl','fav','last','mhist'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});
     const g=R0('prof:guest');W0('prof:'+u,{name:g&&g.name!='Khách'?g.name:u,av:g?g.av:'e:0'})}
   else if(!us[u]||us[u].h!=await hp(pw,u))return m('Sai tên đăng nhập hoặc mật khẩu');
   W0('cur',u);$('#sh').classList.remove('on');render()}
 function openEdit(){const p=prof();tmpAv=p.av||'e:0';$('#sh').classList.add('on');
   $('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>Chỉnh sửa hồ sơ</b></div><div class="fm" style="align-items:center"><div id="pv">${avh({av:tmpAv},96)}</div><div class="avg">${AVS.map((a,i)=>`<button data-pa="e:${i}" aria-label="Avatar ${i+1}">${avh({av:'e:'+i},48)}</button>`).join('')}</div><label class="up">Tải ảnh lên<input type="file" id="fi" accept="image/*" hidden></label><input id="dn" placeholder="Tên hiển thị" maxlength="24" value="${esc(p.name)}"><button class="big" data-ps>Lưu</button></div>`}
 function saveProf(){const n=$('#dn').value.trim()||prof().name;W0('prof:'+(R0('cur')||'guest'),{name:n,av:tmpAv});touch();$('#sh').classList.remove('on');render()}
-function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='aniviet-backup.json';a.click()}
+function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last(),mhist:G('mhist')||[]},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='aniviet-backup.json';a.click()}
 function impData(t){try{const d=JSON.parse(t);if(!d||d.v!==1)throw 0;
   for(const k of['hist','wl','fav']){const c=G(k)||[],sn=new Set(c.map(key));S(k,c.concat((d[k]||[]).filter(x=>x&&x.slug&&!sn.has(key(x)))))}
   S('last',Object.assign({},d.last||{},G('last')||{}));
+  {const c=G('mhist')||[],sn=new Set(c.map(x=>x.id));S('mhist',c.concat((d.mhist||[]).filter(x=>x&&x.id&&!sn.has(x.id))))}
   if(d.prof){const p=prof();W0('prof:'+(R0('cur')||'guest'),{name:d.prof.name||p.name,av:d.prof.av||p.av})}
   alert('Đã khôi phục dữ liệu');render()}catch(e){alert('Tệp sao lưu không hợp lệ')}}
 function render(){
   [...wl(),...hist(),...(G('fav')||[])].forEach(x=>M[key(x)]=x);
+  (G('mhist')||[]).forEach(x=>MM[x.id]=x);
   $('#nav').innerHTML=[['home','home','Trang chủ'],['lists','bm','Danh sách'],['browse','grid','Duyệt'],['sim','spark','Đang chiếu'],['mg','book','MangaDEX']].map(([k,i,t])=>`<button data-t="${k}" class="${tab==k?'on':''}">${i=='av'?'<div class="av"></div>':I(i)}${t}</button>`).join('');
   ({home,lists,browse:()=>gridView('Duyệt','view',0),sim:simView,mg:mangaView,acc})[tab]();scrollTo(0,0)}
 
@@ -345,11 +359,15 @@ const merr=()=>`<div class="emp"><h3>Không tải được MangaDex</h3><p>Trìn
 const mt=o=>o?(o.vi||o.en||Object.values(o)[0]||''):'';
 const chl=c=>(c.n?'Chương '+c.n:'Oneshot')+(c.t?' – '+c.t:'');
 const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:mdi(r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:''),ra:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
+const mh=()=>G('mhist')||[];
+const mhc=x=>`<div class="pc" data-mg="${x.id}"><i>${pic(x.img,x.ra)}</i><b>${esc(x.name)}</b><p><span>${esc(x.ch&&x.ch.n?'Chương '+x.ch.n:'Oneshot')}</span></p></div>`;
+function saveRead(c){const o=curM,l=mh(),e0=l.find(x=>x.id==o.id),rd=new Set((e0&&e0.read)||[]);rd.add(c.id);
+  S('mhist',[{id:o.id,name:o.name,img:o.img,ra:o.ra,st:o.st,year:o.year,tags:o.tags,desc:(o.desc||'').slice(0,400),ch:{id:c.id,n:c.n,t:c.t},read:[...rd].slice(-300),at:Date.now()},...l.filter(x=>x.id!=o.id)].slice(0,40))}
 const mc=o=>`<div class="pc" data-mg="${o.id}"><i>${pic(o.img,o.ra)}</i><b>${esc(o.name)}</b><p><span>${esc(stv[o.st]||o.st||'')}</span></p></div>`;
 async function mlist(off){const u=`/manga?limit=24&offset=${off}&includes[]=cover_art&availableTranslatedLanguage[]=${ml}${CR}`+(mq?`&title=${encodeURIComponent(mq)}`:`&order[${mo}]=desc`);return(await MJ(u)).data.map(mn)}
 async function mangaView(){
   topbar('MangaDEX');mp=0;
-  $('#app').innerHTML=`<div class="page"><div class="sb" style="padding:8px 12px"><label>${I('search',18)}<input id="mq" placeholder="Tìm truyện…" value="${esc(mq)}" autocomplete="off"></label></div><div class="chips ys">${[['followedCount','Phổ biến'],['latestUploadedChapter','Mới cập nhật'],['rating','Đánh giá cao']].map(([k,t])=>`<button data-mo="${k}" class="${mo==k&&!mq?'on':''}">${t}</button>`).join('')}<button data-ml="${ml=='vi'?'en':'vi'}">${ml=='vi'?'🇻🇳 Tiếng Việt':'🇬🇧 English'}</button></div><div class="grid" id="g"></div><div id="mm"></div><div class="sk"></div></div>`;
+  $('#app').innerHTML=`<div class="page"><div class="sb" style="padding:8px 12px"><label>${I('search',18)}<input id="mq" placeholder="Tìm truyện…" value="${esc(mq)}" autocomplete="off"></label></div><div class="chips ys">${[['followedCount','Phổ biến'],['latestUploadedChapter','Mới cập nhật'],['rating','Đánh giá cao']].map(([k,t])=>`<button data-mo="${k}" class="${mo==k&&!mq?'on':''}">${t}</button>`).join('')}<button data-ml="${ml=='vi'?'en':'vi'}">${ml=='vi'?'🇻🇳 Tiếng Việt':'🇬🇧 English'}</button></div>${mq||!mh().length?'':`<h2 style="padding-top:6px">Đang đọc</h2><div class="rail">${mh().map(mhc).join('')}</div><h2 style="padding-top:8px">Khám phá</h2>`}<div class="grid" id="g"></div><div id="mm"></div><div class="sk"></div></div>`;
   await mmore()}
 async function mmore(){
   try{const a=await mlist(mp*24);$('#g').insertAdjacentHTML('beforeend',a.map(mc).join(''));$('#app .sk')?.remove();
@@ -365,11 +383,15 @@ async function loadCh(id){
     CH=d.data.filter(c=>c.attributes.pages>0&&!c.attributes.externalUrl).filter(c=>{const k=c.attributes.chapter||c.id;if(seen.has(k))return false;seen.add(k);return true}).map((c,i)=>({i,id:c.id,n:c.attributes.chapter,t:c.attributes.title,d:c.attributes.publishAt,g:((c.relationships||[]).find(r=>r.type=='scanlation_group')||{attributes:{}}).attributes.name||''}));
     drawCh()}catch(e){$('#chl').innerHTML=merr()}}
 function drawCh(){
-  const L=cdir=='desc'?CH:[...CH].reverse();
-  $('#mcta').innerHTML=CH.length?`<button class="go" data-rf>${I('play',18)}Đọc từ đầu</button>`:'';
-  $('#chl').innerHTML=CH.length?`<div class="sv" style="text-transform:none"><b>${CH.length} chương</b><span style="flex:1"></span><button data-cs style="color:var(--or);font-size:13px;font-weight:700">${cdir=='desc'?'Mới nhất ▾':'Cũ nhất ▴'}</button></div>`+L.map(c=>`<div class="cr" data-ch="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div>${I('play',14)}</div>`).join(''):`<div class="emp"><h3>Chưa có chương ${ml=='vi'?'tiếng Việt':'tiếng Anh'}</h3><p>Thử đổi ngôn ngữ ở trang MangaDEX.</p></div>`}
+  const L=cdir=='desc'?CH:[...CH].reverse(),hm=mh().find(x=>x.id==curM.id),hx=hm?CH.findIndex(c=>c.id==hm.ch.id):-1,rd=new Set((hm&&hm.read)||[]);
+  $('#mcta').innerHTML=CH.length?(hx>=0?`<button class="go" data-ch="${hx}">${I('play',18)}Đọc tiếp ${esc(chl(CH[hx]))}</button><button class="bm" data-rf style="width:auto;padding:0 14px;font-size:12px;font-weight:700">Từ đầu</button>`:`<button class="go" data-rf>${I('play',18)}Đọc từ đầu</button>`):'';
+  $('#chl').innerHTML=CH.length?`<div class="sv" style="text-transform:none"><b>${CH.length} chương</b><span style="flex:1"></span><button data-cs style="color:var(--or);font-size:13px;font-weight:700">${cdir=='desc'?'Mới nhất ▾':'Cũ nhất ▴'}</button></div>`+L.map(c=>`<div class="cr ${rd.has(c.id)?'rdd':''}" data-ch="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div>${I('play',14)}</div>`).join(''):`<div class="emp"><h3>Chưa có chương ${ml=='vi'?'tiếng Việt':'tiếng Anh'}</h3><p>Thử đổi ngôn ngữ ở trang MangaDEX.</p></div>`}
+function openCp(){
+  const el=$('#cp');el.classList.add('on');
+  el.innerHTML=`<div class="sbar"><button data-cpc aria-label="Đóng">${I('x')}</button><b>Chọn chương</b><span style="margin-left:auto;color:var(--mu);font-size:12px;font-weight:400">${CH.length} chương</span></div>`+CH.map(c=>`<div class="cr ${c.i==CHi?'cur':''}" data-cp="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div></div>`).join('');
+  setTimeout(()=>{const x=el.querySelector('.cur');if(x)x.scrollIntoView({block:'center'})},80)}
 async function readCh(i){
-  const c=CH[i];if(!c)return;CHi=i;const el=$('#rd'),bar=`<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span></div>`;
+  const c=CH[i];if(!c)return;CHi=i;saveRead(c);const el=$('#rd'),bar=`<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span><button data-rp ${i>=CH.length-1?'disabled':''} aria-label="Chương trước">${I('cl',22)}</button><button data-rn ${i<=0?'disabled':''} aria-label="Chương sau">${I('cr',22)}</button><button data-cpo aria-label="Chọn chương">${I('more',22)}</button></div>`;
   el.classList.add('on');el.scrollTop=0;el.innerHTML=bar+'<div class="sk" style="height:70vh"></div>';
   try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl;
     el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" ${MDP?`data-p="${esc(mdi(B+'/data-saver/'+h+'/'+f))}" onerror="this.onerror=null;this.src=this.dataset.p"`:''} alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
@@ -450,11 +472,11 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
-  if(d.t){tab=d.t;$('#rd').classList.remove('on');$('#sr').classList.remove('on');$('#det').classList.remove('on');return render()}
+  if(d.t){tab=d.t;$('#cp').classList.remove('on');$('#rd').classList.remove('on');$('#sr').classList.remove('on');$('#det').classList.remove('on');return render()}
   if(d.go){const it=M[d.go];const l=last()[d.go];openDet(it).then(()=>{if(D&&D.servers.length&&D.servers[0].eps.length)play(l?l.s:0,l?l.e:0)});return}
   if(d.sv!==undefined){const it=M[d.sv],l=wl(),i=l.findIndex(x=>key(x)==d.sv);i<0?l.unshift(it):l.splice(i,1);S('wl',l);document.querySelectorAll(`[data-sv="${d.sv}"]`).forEach(b=>{b.classList.toggle('on',i<0);if(b.id=='sv2')b.innerHTML=I(i<0?'bm':'plus',22)+'Danh sách'});if(tab=='lists')lists();return}
   if(d.sr!==undefined)return openSearch();
@@ -474,6 +496,10 @@ document.addEventListener('click',e=>{
   if(d.lo!==undefined){W0('cur',null);SESS=null;try{localStorage.removeItem('sess')}catch(e){}return render()}
   if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert(SYNC.err?'Lỗi: '+SYNC.err:'Đã sao lưu lên đám mây');render()});return}
   if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
+  if(d.clm!==undefined){S('mhist',[]);return acc()}
+  if(d.cpo!==undefined)return openCp();
+  if(d.cpc!==undefined)return $('#cp').classList.remove('on');
+  if(d.cp!==undefined){$('#cp').classList.remove('on');return readCh(+d.cp)}
   if(d.alt!==undefined)return altSrc();
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
@@ -482,11 +508,11 @@ document.addEventListener('click',e=>{
   if(d.cs!==undefined){cdir=cdir=='desc'?'asc':'desc';return drawCh()}
   if(d.ch!==undefined)return readCh(+d.ch);
   if(d.rf!==undefined)return readCh(CH.length-1);
-  if(d.rcl!==undefined)return $('#rd').classList.remove('on');
+  if(d.rcl!==undefined){$('#rd').classList.remove('on');if(curM&&$('#chl')&&CH.length)drawCh();return}
   if(d.rp!==undefined)return readCh(CHi+1);
   if(d.rn!==undefined)return readCh(CHi-1);
   if(d.yr!==undefined){yr=d.yr;return simView()}
-  if(d.src){src=d.src;S('src',src);return acc()}
+  if(d.src){src=d.src;S('src',src);return tab=='acc'?acc():render()}
   if(d.clr!==undefined){S('hist',[]);S('last',{});return acc()}
   if(d.dc!==undefined)return $('#det').classList.remove('on');
   if(d.ep!==undefined)return play(sI,+d.ep);
