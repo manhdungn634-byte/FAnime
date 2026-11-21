@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
+<meta name="referrer" content="no-referrer">
 <title>AniViet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -148,6 +149,17 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .avg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;justify-items:center;margin:6px 0}
 .up{display:inline-block;color:var(--or);font-weight:700;font-size:13px;padding:8px;cursor:pointer}
 .row2{display:flex;justify-content:space-between;align-items:center;padding:14px 12px;border-bottom:1px solid #1d1d20}.row2 button{color:var(--or);font-weight:700;font-size:13px}
+#rd{z-index:35}
+.mh{position:relative;display:flex;justify-content:center;padding:calc(64px + env(safe-area-inset-top,0px)) 0 18px;overflow:hidden}
+.mb{position:absolute;inset:-24px;background:center/cover;filter:blur(22px) brightness(.45)}
+.mh img{position:relative;width:42%;max-width:190px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;background:var(--card)}
+.cr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 12px;border-bottom:1px solid #1d1d20;cursor:pointer}
+.cr b{display:block;font-weight:500;font-size:13px}.cr small{color:var(--mu);font-size:11px}
+.rbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:#000e;font-weight:700;font-size:13px}
+.rbar span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#rp img{display:block;width:100%;min-height:320px;background:#0b0b0c}
+.rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
+.rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
 @media(prefers-reduced-motion:reduce){.hs,.ov{transition:none}.sg b.on i{animation-duration:.01s}}
 </style>
 </head>
@@ -158,6 +170,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 <div id="sr" class="ov"></div>
 <div id="det" class="ov"></div>
 <div id="pl" class="ov"></div>
+<div id="rd" class="ov"></div>
 <div id="sh" class="ov"></div>
 <script>
 /* ĐỒNG BỘ ĐÁM MÂY (Firebase) – điền 2 giá trị này để đăng nhập được trên nhiều thiết bị */
@@ -170,7 +183,7 @@ const G=k=>R0(NS(k)),S=(k,v)=>{W0(NS(k),v);if(k!='src')touch()};
 ['hist','wl','last'].forEach(k=>{if(R0('u:guest:'+k)==null&&R0(k)!=null)W0('u:guest:'+k,R0(k))});
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const strip=s=>String(s||'').replace(/<[^>]+>/g,'').trim();
-const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>',heart:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z"/>',heartf:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z" fill="currentColor"/>'};
+const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',book:'<path d="M12 7c-1.5-1.5-4-2-8-2v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2V5c-4 0-6.5.5-8 2zM12 7v13"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>',heart:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z"/>',heartf:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z" fill="currentColor"/>'};
 const I=(n,s=24)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
 const img=p=>!p?'':/^https?:/.test(p)?p:CDN+(p.includes('/')?'/':'/uploads/movies/')+p.replace(/^\//,'');
 const AVS=[['🦊','#ff640a'],['🐱','#2563eb'],['🐼','#16a34a'],['🐸','#0d9488'],['🦄','#c026d3'],['🐲','#dc2626'],['👾','#7c3aed'],['🌸','#db2777']];
@@ -307,9 +320,48 @@ function impData(t){try{const d=JSON.parse(t);if(!d||d.v!==1)throw 0;
   alert('Đã khôi phục dữ liệu');render()}catch(e){alert('Tệp sao lưu không hợp lệ')}}
 function render(){
   [...wl(),...hist(),...(G('fav')||[])].forEach(x=>M[key(x)]=x);
-  $('#nav').innerHTML=[['home','home','Trang chủ'],['lists','bm','Danh sách'],['browse','grid','Duyệt'],['sim','spark','Đang chiếu']].map(([k,i,t])=>`<button data-t="${k}" class="${tab==k?'on':''}">${i=='av'?'<div class="av"></div>':I(i)}${t}</button>`).join('');
-  ({home,lists,browse:()=>gridView('Duyệt','view',0),sim:simView,acc})[tab]();scrollTo(0,0)}
+  $('#nav').innerHTML=[['home','home','Trang chủ'],['lists','bm','Danh sách'],['browse','grid','Duyệt'],['sim','spark','Đang chiếu'],['mg','book','MangaDEX']].map(([k,i,t])=>`<button data-t="${k}" class="${tab==k?'on':''}">${i=='av'?'<div class="av"></div>':I(i)}${t}</button>`).join('');
+  ({home,lists,browse:()=>gridView('Duyệt','view',0),sim:simView,mg:mangaView,acc})[tab]();scrollTo(0,0)}
 
+/* ---------- MANGADEX ---------- */
+/* MangaDex chặn gọi trực tiếp từ trình duyệt (CORS). Có thể dán địa chỉ proxy Cloudflare Worker của bạn vào MDP, ví dụ 'https://md.ten-ban.workers.dev' */
+const MDP='',CR='&contentRating[]=safe&contentRating[]=suggestive';
+let ml='vi',mo='followedCount',mq='',mp=0,MM={},CH=[],CHi=0,cdir='desc',curM;
+const stv={ongoing:'Đang ra',completed:'Hoàn thành',hiatus:'Tạm ngưng',cancelled:'Đã hủy'};
+async function MJ(u){const url=(MDP||'https://api.mangadex.org')+u;try{return await J(url)}catch(e){if(MDP)throw e;return J('https://api.allorigins.win/raw?url='+encodeURIComponent(url))}}
+const merr=()=>`<div class="emp"><h3>Không tải được MangaDex</h3><p>Trình duyệt hoặc mạng đang chặn kết nối tới MangaDex. Hãy thử lại sau, hoặc cấu hình proxy MDP trong index.html.</p></div>`;
+const mt=o=>o?(o.vi||o.en||Object.values(o)[0]||''):'';
+const chl=c=>(c.n?'Chương '+c.n:'Oneshot')+(c.t?' – '+c.t:'');
+const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
+const mc=o=>`<div class="pc" data-mg="${o.id}"><i style="background-image:url('${esc(o.img)}')"></i><b>${esc(o.name)}</b><p><span>${esc(stv[o.st]||o.st||'')}</span></p></div>`;
+async function mlist(off){const u=`/manga?limit=24&offset=${off}&includes[]=cover_art&availableTranslatedLanguage[]=${ml}${CR}`+(mq?`&title=${encodeURIComponent(mq)}`:`&order[${mo}]=desc`);return(await MJ(u)).data.map(mn)}
+async function mangaView(){
+  topbar('MangaDEX');mp=0;
+  $('#app').innerHTML=`<div class="page"><div class="sb" style="padding:8px 12px"><label>${I('search',18)}<input id="mq" placeholder="Tìm truyện…" value="${esc(mq)}" autocomplete="off"></label></div><div class="chips ys">${[['followedCount','Phổ biến'],['latestUploadedChapter','Mới cập nhật'],['rating','Đánh giá cao']].map(([k,t])=>`<button data-mo="${k}" class="${mo==k&&!mq?'on':''}">${t}</button>`).join('')}<button data-ml="${ml=='vi'?'en':'vi'}">${ml=='vi'?'🇻🇳 Tiếng Việt':'🇬🇧 English'}</button></div><div class="grid" id="g"></div><div id="mm"></div><div class="sk"></div></div>`;
+  await mmore()}
+async function mmore(){
+  try{const a=await mlist(mp*24);$('#g').insertAdjacentHTML('beforeend',a.map(mc).join(''));$('#app .sk')?.remove();
+    $('#mm').innerHTML=a.length==24?'<button class="more" data-mmore>Tải thêm</button>':(!mp&&!a.length?`<div class="emp"><h3>Không tìm thấy truyện</h3><p>Thử từ khóa hoặc ngôn ngữ khác.</p></div>`:'')}
+  catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=merr()}}
+function openManga(id){
+  const o=curM=MM[id],el=$('#det');cdir='desc';CH=[];el.classList.add('on');el.scrollTop=0;el.onscroll=null;
+  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(o.img.replace('.256.','.512.'))}" alt=""></div>
+  <div class="di" style="margin-top:0"><h1 style="font-size:22px">${esc(o.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(stv[o.st]||o.st||'')}</span>${o.year?'<span>•</span><span>'+o.year+'</span>':''}${o.tags.length?'<span>•</span><span>'+esc(o.tags.join(', '))+'</span>':''}</div><div class="cta" id="mcta" style="margin-top:12px"></div><p class="dd" id="dd">${esc(o.desc)||'Chưa có mô tả.'}</p><button class="mo" data-md>Chi tiết hơn</button></div><div id="chl"><div class="sk"></div></div>`;
+  loadCh(id)}
+async function loadCh(id){
+  try{const d=await MJ(`/manga/${id}/feed?limit=500&translatedLanguage[]=${ml}&order[chapter]=desc&includes[]=scanlation_group${CR}`),seen=new Set();
+    CH=d.data.filter(c=>c.attributes.pages>0&&!c.attributes.externalUrl).filter(c=>{const k=c.attributes.chapter||c.id;if(seen.has(k))return false;seen.add(k);return true}).map((c,i)=>({i,id:c.id,n:c.attributes.chapter,t:c.attributes.title,d:c.attributes.publishAt,g:((c.relationships||[]).find(r=>r.type=='scanlation_group')||{attributes:{}}).attributes.name||''}));
+    drawCh()}catch(e){$('#chl').innerHTML=merr()}}
+function drawCh(){
+  const L=cdir=='desc'?CH:[...CH].reverse();
+  $('#mcta').innerHTML=CH.length?`<button class="go" data-rf>${I('play',18)}Đọc từ đầu</button>`:'';
+  $('#chl').innerHTML=CH.length?`<div class="sv" style="text-transform:none"><b>${CH.length} chương</b><span style="flex:1"></span><button data-cs style="color:var(--or);font-size:13px;font-weight:700">${cdir=='desc'?'Mới nhất ▾':'Cũ nhất ▴'}</button></div>`+L.map(c=>`<div class="cr" data-ch="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div>${I('play',14)}</div>`).join(''):`<div class="emp"><h3>Chưa có chương ${ml=='vi'?'tiếng Việt':'tiếng Anh'}</h3><p>Thử đổi ngôn ngữ ở trang MangaDEX.</p></div>`}
+async function readCh(i){
+  const c=CH[i];if(!c)return;CHi=i;const el=$('#rd'),bar=`<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span></div>`;
+  el.classList.add('on');el.scrollTop=0;el.innerHTML=bar+'<div class="sk" style="height:70vh"></div>';
+  try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl;
+    el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
+  catch(e){el.innerHTML=bar+merr()}}
 /* ---------- SEARCH ---------- */
 let sq='',sf='all',sres=[],stm;
 function openSearch(){const el=$('#sr');el.classList.add('on');
@@ -379,11 +431,11 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
-  if(d.t){tab=d.t;$('#sr').classList.remove('on');$('#det').classList.remove('on');return render()}
+  if(d.t){tab=d.t;$('#rd').classList.remove('on');$('#sr').classList.remove('on');$('#det').classList.remove('on');return render()}
   if(d.go){const it=M[d.go];const l=last()[d.go];openDet(it).then(()=>{if(D&&D.servers.length&&D.servers[0].eps.length)play(l?l.s:0,l?l.e:0)});return}
   if(d.sv!==undefined){const it=M[d.sv],l=wl(),i=l.findIndex(x=>key(x)==d.sv);i<0?l.unshift(it):l.splice(i,1);S('wl',l);document.querySelectorAll(`[data-sv="${d.sv}"]`).forEach(b=>{b.classList.toggle('on',i<0);if(b.id=='sv2')b.innerHTML=I(i<0?'bm':'plus',22)+'Danh sách'});if(tab=='lists')lists();return}
   if(d.sr!==undefined)return openSearch();
@@ -403,6 +455,16 @@ document.addEventListener('click',e=>{
   if(d.lo!==undefined){W0('cur',null);SESS=null;try{localStorage.removeItem('sess')}catch(e){}return render()}
   if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert('Đã đồng bộ');render()});return}
   if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
+  if(d.mg)return openManga(d.mg);
+  if(d.mo){mo=d.mo;mq='';return mangaView()}
+  if(d.ml){ml=d.ml;return mangaView()}
+  if(d.mmore!==undefined){mp++;t.textContent='Đang tải…';return mmore()}
+  if(d.cs!==undefined){cdir=cdir=='desc'?'asc':'desc';return drawCh()}
+  if(d.ch!==undefined)return readCh(+d.ch);
+  if(d.rf!==undefined)return readCh(CH.length-1);
+  if(d.rcl!==undefined)return $('#rd').classList.remove('on');
+  if(d.rp!==undefined)return readCh(CHi+1);
+  if(d.rn!==undefined)return readCh(CHi-1);
   if(d.yr!==undefined){yr=d.yr;return simView()}
   if(d.src){src=d.src;S('src',src);return acc()}
   if(d.clr!==undefined){S('hist',[]);S('last',{});return acc()}
@@ -416,7 +478,8 @@ document.addEventListener('click',e=>{
   if(d.md!==undefined){const p=$('#dd');p.classList.toggle('o');t.textContent=p.classList.contains('o')?'Thu gọn':'Chi tiết hơn';return}
   if(d.share!==undefined){if(navigator.share)navigator.share({title:CI.name,url:location.href}).catch(()=>{});return}
 });
-document.addEventListener('input',e=>{if(e.target.id=='q'){clearTimeout(stm);const v=e.target.value.trim();stm=setTimeout(()=>{sq=v;sbody()},350)}});
+document.addEventListener('input',e=>{if(e.target.id=='mq'){clearTimeout(stm);const v=e.target.value.trim();stm=setTimeout(()=>{mq=v;mp=0;$('#g').innerHTML='';$('#mm').innerHTML='<div class="sk"></div>';mmore()},400);return}
+  if(e.target.id=='q'){clearTimeout(stm);const v=e.target.value.trim();stm=setTimeout(()=>{sq=v;sbody()},350)}});
 document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value;eps()}});
 document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   if(e.target.id=='imp')f.text().then(impData);
