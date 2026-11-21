@@ -21,13 +21,14 @@ svg.ic{display:block;flex:none}
 nav{position:fixed;bottom:0;left:0;right:0;margin:0 auto;max-width:480px;display:flex;background:#0d0d0f;border-top:1px solid #1b1b1f;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;color:#c9c9c9}
 nav button.on{color:var(--or)}
-.av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#111);border:2px solid #3b82f6}
+.av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;border:2px solid #333;flex:none}
 /* top bar */
 .top{position:fixed;top:0;left:0;right:0;margin:0 auto;max-width:480px;display:flex;align-items:center;gap:18px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;z-index:9;pointer-events:none;transition:background .2s}
 .top>*{pointer-events:auto}.top.s{background:#000}
 .lg{width:30px;height:30px;border-radius:50%;border:4px solid var(--or);border-right-color:transparent;position:relative;margin-right:auto}
 .lg::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--or)}
-.ttl{font-weight:700;font-size:16px;text-align:center;flex:1;padding-left:84px}
+.ttl{font-weight:700;font-size:16px;text-align:center;flex:1;padding-left:86px}
+.top .av.on{border-color:var(--or)}
 /* hero */
 .hero{position:relative;height:min(112vw,520px);overflow:hidden;background:#111;touch-action:pan-y}
 .hs{position:absolute;inset:0;opacity:0;transition:opacity .7s;background:#111 center top/cover}
@@ -82,6 +83,8 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .chips{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none}
 .chips button{flex:none;padding:6px 14px;border-radius:16px;font-size:12px;color:#bbb}
 .chips button.on{background:#27282c;color:#fff}
+.ys{position:sticky;top:calc(54px + env(safe-area-inset-top,0px));background:#000;z-index:8;padding:8px 12px}
+.ys button{background:#1a1b1f}.ys button.on{background:var(--or);color:#000;font-weight:700}
 .sr{display:flex;gap:12px;padding:6px 12px;align-items:center;cursor:pointer}
 .sr i{width:104px;aspect-ratio:16/9;flex:none;background:var(--card) center/cover}
 .sr div{flex:1;min-width:0}.sr b{display:block;font-weight:500;font-size:13px}.sr small{color:var(--mu);font-size:11px}
@@ -93,7 +96,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .di .mt{justify-content:flex-start}
 .st{display:flex;align-items:center;gap:8px;font-size:11px;color:#ddd;margin:6px 0}
 .st b{color:var(--or);letter-spacing:2px;font-size:15px}
-.ac{display:flex;justify-content:center;gap:40px;margin:14px 0;color:var(--or);font-size:11px;font-weight:700}
+.ac{display:flex;justify-content:center;gap:28px;margin:14px 0;color:var(--or);font-size:11px;font-weight:700}
 .ac button{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--or)}
 .dd{font-size:12px;color:#ddd;text-align:left;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .dd.o{display:block}
@@ -134,6 +137,17 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .pi .dd{-webkit-line-clamp:2}
 .nx{font-size:14px;font-weight:700;margin:22px 0 10px}
 .al{display:block;margin:12px auto;color:var(--or);font-size:11px;font-weight:700}
+#sh{z-index:40}
+.pf{display:flex;align-items:center;gap:14px;padding:12px;cursor:pointer}.pn b{font-size:17px;display:block}.pn small{color:var(--mu)}
+.sm{margin-left:auto;border:1px solid #444;border-radius:4px;padding:6px 14px;font-size:12px}
+.bx{margin:4px 12px 12px;background:#141518;border-radius:8px;padding:14px}.bx small{display:block;color:var(--mu);font-size:12px}
+.sbar{display:flex;align-items:center;gap:14px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;font-size:16px;font-weight:700}
+.fm{padding:10px 16px;display:flex;flex-direction:column;gap:12px}
+.fm input:not([hidden]){background:#1d1e22;border-radius:8px;padding:13px 14px;width:100%}.fm input:focus{box-shadow:0 0 0 2px var(--or)}
+.nt{font-size:12px;color:var(--mu)}.er2{color:#ff5a5a;font-size:12px;min-height:16px}
+.avg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;justify-items:center;margin:6px 0}
+.up{display:inline-block;color:var(--or);font-weight:700;font-size:13px;padding:8px;cursor:pointer}
+.row2{display:flex;justify-content:space-between;align-items:center;padding:14px 12px;border-bottom:1px solid #1d1d20}.row2 button{color:var(--or);font-weight:700;font-size:13px}
 @media(prefers-reduced-motion:reduce){.hs,.ov{transition:none}.sg b.on i{animation-duration:.01s}}
 </style>
 </head>
@@ -144,21 +158,29 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 <div id="sr" class="ov"></div>
 <div id="det" class="ov"></div>
 <div id="pl" class="ov"></div>
+<div id="sh" class="ov"></div>
 <script>
 const KK='https://phimapi.com',NC='https://phim.nguonc.com/api',CDN='https://phimimg.com';
 const $=s=>document.querySelector(s),J=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()};
-const G=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},S=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const R0=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},W0=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const NS=k=>['hist','wl','last','fav'].includes(k)?'u:'+(R0('cur')||'guest')+':'+k:k;
+const G=k=>R0(NS(k)),S=(k,v)=>W0(NS(k),v);
+['hist','wl','last'].forEach(k=>{if(R0('u:guest:'+k)==null&&R0(k)!=null)W0('u:guest:'+k,R0(k))});
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const strip=s=>String(s||'').replace(/<[^>]+>/g,'').trim();
-const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>'};
+const P={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',cast:'<path d="M3 18a3 3 0 013 3M3 14a7 7 0 017 7M3 10a11 11 0 0111 11M3 6V4h18v16h-7"/>',home:'<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>',bm:'<path d="M6 3h12v18l-6-4-6 4z"/>',grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',spark:'<path d="M10 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2zM19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>',x:'<path d="M5 5l14 14M19 5L5 19"/>',plus:'<path d="M12 5v14M5 12h14"/>',share:'<path d="M12 15V3M8 7l4-4 4 4M5 12v9h14v-9"/>',dl:'<path d="M12 3v12M7 11l5 5 5-5M5 21h14"/>',more:'<circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/>',up:'<path d="M7 11v10H3V11zM7 11l4-8c2 0 3 1 3 3v3h6l-2 9H7"/>',dn:'<path d="M7 13V3H3v10zM7 13l4 8c2 0 3-1 3-3v-3h6l-2-9H7"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M7 4v16M17 4v16" stroke-width="4"/>',rw:'<path d="M4 12a8 8 0 108-8H8M11 1L8 4l3 3"/>',fw:'<path d="M20 12a8 8 0 11-8-8h4M13 1l3 3-3 3"/>',cd:'<path d="M5 9l7 7 7-7"/>',fs:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',tri:'<path d="M5 9l7 7 7-7z" fill="currentColor"/>',heart:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z"/>',heartf:'<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.5-8 11-8 11z" fill="currentColor"/>'};
 const I=(n,s=24)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
 const img=p=>!p?'':/^https?:/.test(p)?p:CDN+(p.includes('/')?'/':'/uploads/movies/')+p.replace(/^\//,'');
+const AVS=[['🦊','#ff640a'],['🐱','#2563eb'],['🐼','#16a34a'],['🐸','#0d9488'],['🦄','#c026d3'],['🐲','#dc2626'],['👾','#7c3aed'],['🌸','#db2777']];
+const prof=()=>{const c=R0('cur');return R0('prof:'+(c||'guest'))||{name:c||'Khách',av:'e:0'}};
+const avh=(p,sz,cls='')=>{const a=p.av||'e:0';let st,tx='';if(a.startsWith('data:'))st=`background:url('${a}') center/cover`;else{const v=AVS[+a.slice(2)]||AVS[0];st='background:'+v[1];tx=v[0]}return`<div class="av ${cls}" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.5)}px;${st}">${tx}</div>`};
+const isF=it=>(G('fav')||[]).some(x=>key(x)==key(it));
 let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
 const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:img(i.thumb_url||i.poster_url),cov:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
-async function list(p=1,sort){
-  if(src=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}`)).data.items.map(norm);
-  return(await J(`${NC}/films/danh-sach/hoat-hinh?page=${p}`)).items.map(norm)}
+async function list(p=1,sort,y){
+  if(src=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(norm);
+  return(await J(y?`${NC}/films/nam-phat-hanh/${y}?page=${p}`:`${NC}/films/danh-sach/hoat-hinh?page=${p}`)).items.map(norm)}
 async function find(k){
   if(src=='kk')return(await J(`${KK}/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&limit=24`)).data.items.filter(i=>!i.type||i.type=='hoathinh').map(norm);
   return(await J(`${NC}/films/search?keyword=${encodeURIComponent(k)}`)).items.map(norm)}
@@ -183,7 +205,7 @@ const ico=(a,b)=>`${a?'':''}`;
 
 /* ---------- HOME ---------- */
 let hi=0,hl=[],tm;
-function topbar(title){$('#top').className='top';$('#top').innerHTML=title?`<div class="ttl">${title}</div>${I('cast')}<button data-sr aria-label="Tìm kiếm">${I('search')}</button>`:`<div class="lg"></div>${I('cast')}<button data-sr aria-label="Tìm kiếm">${I('search')}</button>`}
+function topbar(title){$('#top').className='top';const r=`<button data-sr aria-label="Tìm kiếm">${I('search')}</button><button data-t="acc" aria-label="Tài khoản">${avh(prof(),28,tab=='acc'?'on':'')}</button>`;$('#top').innerHTML=title?`<div class="ttl">${title}</div>${r}`:`<div class="lg"></div>${r}`}
 async function home(){
   topbar();$('#app').innerHTML=sk;
   try{
@@ -211,20 +233,58 @@ async function heroShow(i){
 /* ---------- OTHER TABS ---------- */
 let lt='wl';
 function lists(){
-  topbar('Danh sách của tôi');const a=lt=='wl'?wl():hist();
-  $('#app').innerHTML=`<div class="page"><div class="tabs"><button data-lt="wl" class="${lt=='wl'?'on':''}">Theo dõi</button><button data-lt="hs" class="${lt=='hs'?'on':''}">Lịch sử</button></div>`+
+  topbar('Danh sách của tôi');const a=wl();
+  $('#app').innerHTML=`<div class="page"><h2>Đang theo dõi</h2>`+
   (a.length?`<div class="grid" style="margin-top:16px">${a.map(pc).join('')}</div>`:
-  `<div class="emp"><svg width="150" height="150" viewBox="0 0 150 150"><rect x="86" y="82" width="26" height="36" fill="#2bb5b0"/><rect x="38" y="96" width="26" height="22" fill="#1d8f8b"/><rect x="100" y="104" width="30" height="14" fill="#1d8f8b"/><path d="M48 62c-8-30 12-44 30-40 20 4 24 34 14 50z" fill="#ff640a"/><circle cx="68" cy="66" r="22" fill="#ffe2c4"/><path d="M46 62c10-20 36-22 46 0-14-10-30-8-46 0z" fill="#ff640a"/><circle cx="60" cy="68" r="2.5" fill="#333"/><circle cx="76" cy="68" r="2.5" fill="#333"/><path d="M56 88h22l6 30H50z" fill="#ffb02e"/></svg><h3>Danh sách của bạn còn trống</h3><p>${lt=='wl'?'Hãy thêm vài bộ anime hay nào.':'Bạn chưa xem phim nào.'}</p><button class="big" data-t="browse">Khám phá tất cả</button></div>`)+'</div>'}
+  `<div class="emp"><svg width="150" height="150" viewBox="0 0 150 150"><rect x="86" y="82" width="26" height="36" fill="#2bb5b0"/><rect x="38" y="96" width="26" height="22" fill="#1d8f8b"/><rect x="100" y="104" width="30" height="14" fill="#1d8f8b"/><path d="M48 62c-8-30 12-44 30-40 20 4 24 34 14 50z" fill="#ff640a"/><circle cx="68" cy="66" r="22" fill="#ffe2c4"/><path d="M46 62c10-20 36-22 46 0-14-10-30-8-46 0z" fill="#ff640a"/><circle cx="60" cy="68" r="2.5" fill="#333"/><circle cx="76" cy="68" r="2.5" fill="#333"/><path d="M56 88h22l6 30H50z" fill="#ffb02e"/></svg><h3>Danh sách của bạn còn trống</h3><p>Hãy thêm vài bộ anime hay nào.</p><button class="big" data-t="browse">Khám phá tất cả</button></div>`)+'</div>'}
 let pg=1;
 async function gridView(title,sort,l){
   topbar(title);pg=1;$('#app').innerHTML=`<div class="page"><div class="grid ${l?'l':''}" id="g"></div><div id="mm"></div><div class="sk"></div></div>`;await more(sort,l)}
 async function more(sort,l){
-  try{const a=await list(pg,sort);$('#g').insertAdjacentHTML('beforeend',a.map(l?lc:pc).join('').replace(/class="lc"/g,'class="lc" style="flex:none"'));$('#app .sk')?.remove();$('#mm').innerHTML=`<button class="more" data-more="${sort||''}|${l?1:''}">Tải thêm</button>`}catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=err()}}
+  try{const a=await list(pg,sort,tab=='sim'?yr:'');$('#g').insertAdjacentHTML('beforeend',a.map(l?lc:pc).join('').replace(/class="lc"/g,'class="lc" style="flex:none"'));$('#app .sk')?.remove();$('#mm').innerHTML=a.length?`<button class="more" data-more="${sort||''}|${l?1:''}">Tải thêm</button>`:(pg==1?`<div class="emp"><h3>Chưa có phim năm ${esc(yr)}</h3><p>Thử chọn năm khác hoặc đổi nguồn.</p></div>`:'')}catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=err()}}
+let yr='';
+async function simView(){
+  topbar('Đang chiếu');pg=1;const ys=[''];for(let y=2026;y>=2010;y--)ys.push(y);
+  $('#app').innerHTML=`<div class="page"><div class="chips ys" id="ys">${ys.map(y=>`<button data-yr="${y}" class="${yr==y?'on':''}">${y||'Tất cả'}</button>`).join('')}</div><div class="grid l" id="g" style="margin-top:6px"></div><div id="mm"></div><div class="sk"></div></div>`;
+  const on=$('#ys .on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
+  await more('',1)}
+let at='fav',am='in',tmpAv;
 function acc(){
-  topbar('Tài khoản');$('#app').innerHTML=`<div class="page"><div style="text-align:center;padding:30px 0"><div class="av" style="width:72px;height:72px;margin:0 auto 10px"></div><b>Khách</b></div><h2>Nguồn phim</h2><div class="tabs" style="border:0">${['kk','nc'].map(s=>`<button data-src="${s}" class="${src==s?'on':''}">${s=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><div style="padding:24px 12px"><button class="big" style="background:none;border:2px solid var(--or);color:var(--or)" data-clr>Xóa lịch sử xem</button></div></div>`}
+  topbar('Tài khoản');const p=prof(),cu=R0('cur');let b='';
+  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
+  else{const L=at=='fav'?G('fav')||[]:hist();
+    b=(at=='hs'&&L.length?`<div class="row2"><span>${L.length} phim đã xem</span><button data-clr>Xóa lịch sử</button></div>`:'')+(L.length?`<div class="grid" style="margin-top:14px">${L.map(pc).join('')}</div>`:`<div class="emp"><h3>${at=='fav'?'Chưa có phim yêu thích':'Chưa có lịch sử xem'}</h3><p>${at=='fav'?'Nhấn ♡ Yêu thích ở trang phim để lưu vào đây.':'Những phim bạn xem sẽ hiện ở đây.'}</p></div>`)}
+  $('#app').innerHTML=`<div class="page"><div class="pf" data-ed>${avh(p,72)}<div class="pn"><b>${esc(p.name)}</b><small>${cu?'@'+esc(cu):'Chưa đăng nhập'}</small></div><button class="sm" data-ed>Sửa</button></div>
+  ${cu?'':`<div class="bx"><b>Đăng nhập để sao lưu</b><small>Giữ lịch sử, yêu thích và danh sách theo dõi.</small><div class="cta" style="margin:12px 0 0"><button class="go" data-au="in">Đăng nhập</button><button class="go" style="background:none;border:2px solid var(--or);color:var(--or)" data-au="up">Đăng ký</button></div></div>`}
+  <div class="tabs">${[['fav','Yêu thích'],['hs','Lịch sử xem'],['st','Cài đặt']].map(([k,t])=>`<button data-at="${k}" class="${at==k?'on':''}">${t}</button>`).join('')}</div>${b}</div>`}
+function openAuth(m){am=m;$('#sh').classList.add('on');drawAuth()}
+function drawAuth(){$('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>${am=='in'?'Đăng nhập':'Đăng ký'}</b></div><div class="fm"><p class="nt">Tài khoản được lưu trên thiết bị này. Muốn dùng ở máy khác, hãy Xuất dữ liệu rồi Nhập ở máy mới.</p><input id="u" placeholder="Tên đăng nhập" autocapitalize="none" autocomplete="username"><input id="p" type="password" placeholder="Mật khẩu" autocomplete="${am=='in'?'current-password':'new-password'}">${am=='up'?'<input id="p2" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password">':''}<div class="er2" id="am"></div><button class="big" data-auth>${am=='in'?'Đăng nhập':'Tạo tài khoản'}</button><button class="mo" data-am="${am=='in'?'up':'in'}">${am=='in'?'Chưa có tài khoản? Đăng ký':'Đã có tài khoản? Đăng nhập'}</button></div>`}
+async function hp(pw,u){const b=new TextEncoder().encode('ani:'+u+':'+pw);if(window.crypto&&crypto.subtle){const h=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}let h=5381;for(const c of b)h=(h*33^c)>>>0;return'x'+h}
+async function doAuth(){
+  const u=$('#u').value.trim().toLowerCase(),pw=$('#p').value,m=t=>$('#am').textContent=t,us=R0('users')||{};
+  if(!/^[a-z0-9_.]{3,20}$/.test(u))return m('Tên đăng nhập 3–20 ký tự: chữ thường, số, dấu _ hoặc .');
+  if(am=='up'){
+    if(pw.length<6)return m('Mật khẩu tối thiểu 6 ký tự');
+    if(pw!=$('#p2').value)return m('Mật khẩu nhập lại chưa khớp');
+    if(us[u])return m('Tên đăng nhập đã tồn tại');
+    us[u]={h:await hp(pw,u)};W0('users',us);
+    ['hist','wl','fav','last'].forEach(k=>{const v=R0('u:guest:'+k);if(v!=null)W0('u:'+u+':'+k,v)});
+    const g=R0('prof:guest');W0('prof:'+u,{name:g&&g.name!='Khách'?g.name:u,av:g?g.av:'e:0'})}
+  else if(!us[u]||us[u].h!=await hp(pw,u))return m('Sai tên đăng nhập hoặc mật khẩu');
+  W0('cur',u);$('#sh').classList.remove('on');render()}
+function openEdit(){const p=prof();tmpAv=p.av||'e:0';$('#sh').classList.add('on');
+  $('#sh').innerHTML=`<div class="sbar"><button data-shc aria-label="Đóng">${I('x')}</button><b>Chỉnh sửa hồ sơ</b></div><div class="fm" style="align-items:center"><div id="pv">${avh({av:tmpAv},96)}</div><div class="avg">${AVS.map((a,i)=>`<button data-pa="e:${i}" aria-label="Avatar ${i+1}">${avh({av:'e:'+i},48)}</button>`).join('')}</div><label class="up">Tải ảnh lên<input type="file" id="fi" accept="image/*" hidden></label><input id="dn" placeholder="Tên hiển thị" maxlength="24" value="${esc(p.name)}"><button class="big" data-ps>Lưu</button></div>`}
+function saveProf(){const n=$('#dn').value.trim()||prof().name;W0('prof:'+(R0('cur')||'guest'),{name:n,av:tmpAv});$('#sh').classList.remove('on');render()}
+function expData(){const d={v:1,user:R0('cur'),prof:prof(),hist:hist(),wl:wl(),fav:G('fav')||[],last:last()},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='aniviet-backup.json';a.click()}
+function impData(t){try{const d=JSON.parse(t);if(!d||d.v!==1)throw 0;
+  for(const k of['hist','wl','fav']){const c=G(k)||[],sn=new Set(c.map(key));S(k,c.concat((d[k]||[]).filter(x=>x&&x.slug&&!sn.has(key(x)))))}
+  S('last',Object.assign({},d.last||{},G('last')||{}));
+  if(d.prof){const p=prof();W0('prof:'+(R0('cur')||'guest'),{name:d.prof.name||p.name,av:d.prof.av||p.av})}
+  alert('Đã khôi phục dữ liệu');render()}catch(e){alert('Tệp sao lưu không hợp lệ')}}
 function render(){
-  $('#nav').innerHTML=[['home','home','Trang chủ'],['lists','bm','Danh sách'],['browse','grid','Duyệt'],['sim','spark','Đang chiếu'],['acc','av','Tài khoản']].map(([k,i,t])=>`<button data-t="${k}" class="${tab==k?'on':''}">${i=='av'?'<div class="av"></div>':I(i)}${t}</button>`).join('');
-  ({home,lists,browse:()=>gridView('Duyệt','view',0),sim:()=>gridView('Đang chiếu','',1),acc})[tab]();scrollTo(0,0)}
+  [...wl(),...hist(),...(G('fav')||[])].forEach(x=>M[key(x)]=x);
+  $('#nav').innerHTML=[['home','home','Trang chủ'],['lists','bm','Danh sách'],['browse','grid','Duyệt'],['sim','spark','Đang chiếu']].map(([k,i,t])=>`<button data-t="${k}" class="${tab==k?'on':''}">${i=='av'?'<div class="av"></div>':I(i)}${t}</button>`).join('');
+  ({home,lists,browse:()=>gridView('Duyệt','view',0),sim:simView,acc})[tab]();scrollTo(0,0)}
 
 /* ---------- SEARCH ---------- */
 let sq='',sf='all',sres=[],stm;
@@ -251,7 +311,7 @@ async function openDet(it){
   <div class="dh" style="background-image:url('${esc(it.img)}')"></div>
   <div class="di"><h1>${esc(it.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(it.year||D.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${D.cats.length?'<span>•</span><span>'+esc(D.cats.slice(0,4).join(', '))+'</span>':''}</div>
   ${D.rate?`<div class="st" style="justify-content:center"><b>${'★'.repeat(st)}${'☆'.repeat(5-st)}</b><span>Trung bình: <b style="font-size:11px;letter-spacing:0;color:#fff">${D.rate.toFixed(1)}</b>${D.votes?' ('+D.votes+')':''}</span></div>`:''}
-  <div class="ac"><button data-sv="${key(it)}" id="sv2">${I(hasK(it)?'bm':'plus',22)}Danh sách</button><button data-share>${I('share',22)}Chia sẻ</button></div>
+  <div class="ac"><button data-sv="${key(it)}" id="sv2">${I(hasK(it)?'bm':'plus',22)}Danh sách</button><button data-fv="${key(it)}">${I(isF(it)?'heartf':'heart',22)}Yêu thích</button><button data-share>${I('share',22)}Chia sẻ</button></div>
   <p class="dd" id="dd">${esc(D.desc)}</p><button class="mo" data-md>Chi tiết hơn</button></div>
   <div class="dt"><button class="on" data-dtab="e">Các tập</button><button data-dtab="m">Có thể bạn thích</button></div><div id="db"></div>
   <div class="fx">${cta(it)}</div>`;
@@ -295,7 +355,7 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-src],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -307,8 +367,20 @@ document.addEventListener('click',e=>{
   if(d.sf){sf=d.sf;return rs()}
   if(d.lt){lt=d.lt;return lists()}
   if(d.more!==undefined){const [s,l]=d.more.split('|');pg++;t.textContent='Đang tải…';return more(s,l)}
+  if(d.ed!==undefined)return openEdit();
+  if(d.au)return openAuth(d.au);
+  if(d.at){at=d.at;return acc()}
+  if(d.shc!==undefined)return $('#sh').classList.remove('on');
+  if(d.am){am=d.am;return drawAuth()}
+  if(d.auth!==undefined)return doAuth();
+  if(d.pa){tmpAv=d.pa;$('#pv').innerHTML=avh({av:tmpAv},96);return}
+  if(d.ps!==undefined)return saveProf();
+  if(d.exp!==undefined)return expData();
+  if(d.lo!==undefined){W0('cur',null);return render()}
+  if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
+  if(d.yr!==undefined){yr=d.yr;return simView()}
   if(d.src){src=d.src;S('src',src);return acc()}
-  if(d.clr!==undefined){S('hist',[]);S('last',{});return}
+  if(d.clr!==undefined){S('hist',[]);S('last',{});return acc()}
   if(d.dc!==undefined)return $('#det').classList.remove('on');
   if(d.ep!==undefined)return play(sI,+d.ep);
   if(d.pc!==undefined)return closePl();
@@ -321,6 +393,9 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{if(e.target.id=='q'){clearTimeout(stm);const v=e.target.value.trim();stm=setTimeout(()=>{sq=v;sbody()},350)}});
 document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value;eps()}});
+document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+  if(e.target.id=='imp')f.text().then(impData);
+  if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
 render();
 </script>
 </body>
