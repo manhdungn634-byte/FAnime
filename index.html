@@ -325,7 +325,7 @@ function render(){
 
 /* ---------- MANGADEX ---------- */
 /* MangaDex chặn gọi trực tiếp từ trình duyệt (CORS). Có thể dán địa chỉ proxy Cloudflare Worker của bạn vào MDP, ví dụ 'https://md.ten-ban.workers.dev' */
-const MDP='',CR='&contentRating[]=safe&contentRating[]=suggestive';
+const MDP='https://md.manhdungn634.workers.dev',CR='&contentRating[]=safe&contentRating[]=suggestive';
 let ml='vi',mo='followedCount',mq='',mp=0,MM={},CH=[],CHi=0,cdir='desc',curM;
 const stv={ongoing:'Đang ra',completed:'Hoàn thành',hiatus:'Tạm ngưng',cancelled:'Đã hủy'};
 async function MJ(u){const url=(MDP||'https://api.mangadex.org')+u;try{return await J(url)}catch(e){if(MDP)throw e;return J('https://api.allorigins.win/raw?url='+encodeURIComponent(url))}}
