@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="referrer" content="no-referrer">
 <title>AniViet</title>
+<link rel="preconnect" href="https://wsrv.nl"><link rel="dns-prefetch" href="https://phimimg.com"><link rel="dns-prefetch" href="https://uploads.mangadex.org">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
@@ -54,7 +55,10 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .rail{display:flex;gap:8px;overflow-x:auto;padding:0 12px;scrollbar-width:none;scroll-snap-type:x proximity}
 .rail::-webkit-scrollbar{display:none}
 .pc{flex:0 0 min(29vw,134px);min-width:0;scroll-snap-align:start;cursor:pointer}
-.pc i,.lc i{display:block;width:100%;aspect-ratio:2/3;background:var(--card) center/cover;border-radius:2px}
+.pc i,.lc i,.sr i{position:relative}
+.pc i img,.lc i img,.sr i img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sr i{overflow:hidden}
+.pc i,.lc i{display:block;width:100%;overflow:hidden;aspect-ratio:2/3;background:var(--card) center/cover;border-radius:2px}
 .pc b,.lc b{font-weight:500;font-size:11.5px;line-height:1.25;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.5em}
 .pc p,.lc p{white-space:nowrap;overflow:hidden;display:flex;justify-content:space-between;align-items:center;color:var(--mu);font-size:11px;margin-top:1px}
 .lc{flex:0 0 min(56vw,250px);min-width:0;cursor:pointer;scroll-snap-align:start}
@@ -207,7 +211,9 @@ async function pull(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)re
     if(d.t<lt)await push()}catch(e){}return false}
 let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
-const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:img(i.thumb_url||i.poster_url),cov:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
+const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
+const pic=(s,o)=>`<img loading="lazy" decoding="async" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
+const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
 async function list(p=1,sort,y){
   if(src=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(norm);
   return(await J(y?`${NC}/films/nam-phat-hanh/${y}?page=${p}`:`${NC}/films/danh-sach/hoat-hinh?page=${p}`)).items.map(norm)}
@@ -227,21 +233,21 @@ const epn=n=>/^\d+$/.test(String(n).trim())?'T'+n:n;
 const hasK=it=>wl().some(x=>key(x)==key(it));
 const cta=it=>{const l=last()[key(it)];return`<div class="cta"><button class="go" data-go="${key(it)}">${I('play',18)}${l?'Xem tiếp '+esc(l.n):'Bắt đầu xem T1'}</button><button class="bm ${hasK(it)?'on':''}" data-sv="${key(it)}" aria-label="Theo dõi">${I('bm',20)}</button></div>`};
 const dots=`<span data-menu>${I('more',18)}</span>`;
-const pc=it=>`<div class="pc" data-k="${key(it)}"><i style="background-image:url('${esc(it.img)}')"></i><b>${esc(it.name)}</b><p><span>${esc(it.lang)}</span>${dots}</p></div>`;
-const lc=it=>`<div class="lc" data-k="${key(it)}"><i style="background-image:url('${esc(it.cov)}')"></i><b>${esc(it.name)}</b><p><span>${esc(it.sub)}</span>${dots}</p></div>`;
+const pc=it=>`<div class="pc" data-k="${key(it)}"><i>${pic(it.img,it.ra)}</i><b>${esc(it.name)}</b><p><span>${esc(it.lang)}</span>${dots}</p></div>`;
+const lc=it=>`<div class="lc" data-k="${key(it)}"><i>${pic(it.cov,it.rb)}</i><b>${esc(it.name)}</b><p><span>${esc(it.sub)}</span>${dots}</p></div>`;
 const sk='<div class="sk" style="height:70vh;margin:0;border-radius:0"></div>';
 const err=()=>`<div class="emp"><h3>Không tải được dữ liệu</h3><p>Hãy kiểm tra mạng hoặc đổi nguồn ở mục Tài khoản.</p></div>`;
 const ico=(a,b)=>`${a?'':''}`;
 
 /* ---------- HOME ---------- */
 let hi=0,hl=[],tm;
-function topbar(title){$('#top').className='top';const r=`<button data-sr aria-label="Tìm kiếm">${I('search')}</button><button data-t="acc" aria-label="Tài khoản">${avh(prof(),28,tab=='acc'?'on':'')}</button>`;$('#top').innerHTML=title?`<div class="ttl">${title}</div>${r}`:`<div class="lg"></div>${r}`}
+function topbar(title){$('#top').className='top'+(title?' s':'');const r=`<button data-sr aria-label="Tìm kiếm">${I('search')}</button><button data-t="acc" aria-label="Tài khoản">${avh(prof(),28,tab=='acc'?'on':'')}</button>`;$('#top').innerHTML=title?`<div class="ttl">${title}</div>${r}`:`<div class="lg"></div>${r}`}
 async function home(){
   topbar();$('#app').innerHTML=sk;
   try{
     const [a,b,c]=await Promise.all([list(1),src=='kk'?list(1,'view'):list(2),list(3)]);
     hl=a.slice(0,6);hi=0;const h=hist(),sp=c[1]||b[0];
-    $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" style="background-image:url('${esc(it.img)}')"></div>`).join('')}<div class="hc" id="hc"></div></div>
+    $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" ${i<2?`style="background-image:url('${esc(it.big||it.img)}')"`:`data-bg="${esc(it.big||it.img)}"`}></div>`).join('')}<div class="hc" id="hc"></div></div>
     <h2>Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
     <h2>Mới cập nhật</h2><div class="rail">${a.map(lc).join('')}</div>
     ${h.length?`<h2>Tiếp tục xem</h2><div class="rail">${h.map(lc).join('')}</div>`:''}
@@ -255,6 +261,7 @@ async function home(){
   }catch(e){$('#app').innerHTML=err()}}
 async function heroShow(i){
   hi=i;document.querySelectorAll('.hs').forEach((s,j)=>s.classList.toggle('on',j==i));
+  [i,(i+1)%hl.length].forEach(j=>{const e=document.querySelectorAll('.hs')[j];if(e&&e.dataset.bg){e.style.backgroundImage=`url('${e.dataset.bg}')`;delete e.dataset.bg}});
   const it=hl[i],hc=$('#hc');if(!hc)return;
   const paint=d=>{if(hi!=i||!$('#hc'))return;hc.innerHTML=`<h1>${esc(it.name)}</h1><div class="mt"><span class="bd">${esc(it.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${(d&&d.cats.length?'<span>•</span><span>'+esc(d.cats.slice(0,4).join(', '))+'</span>':'')}</div><p class="ds">${esc(d?d.desc:'')}</p>${cta(it)}<div class="sg" id="sg">${hl.map((_,j)=>`<b class="${j==i?'on':''}"><i></i></b>`).join('')}</div>`;
     const on=$('#sg .on i');if(on)on.addEventListener('animationend',()=>heroShow((hi+1)%hl.length),{once:true})};
@@ -332,8 +339,8 @@ async function MJ(u){const url=(MDP||'https://api.mangadex.org')+u;try{return aw
 const merr=()=>`<div class="emp"><h3>Không tải được MangaDex</h3><p>Trình duyệt hoặc mạng đang chặn kết nối tới MangaDex. Hãy thử lại sau, hoặc cấu hình proxy MDP trong index.html.</p></div>`;
 const mt=o=>o?(o.vi||o.en||Object.values(o)[0]||''):'';
 const chl=c=>(c.n?'Chương '+c.n:'Oneshot')+(c.t?' – '+c.t:'');
-const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
-const mc=o=>`<div class="pc" data-mg="${o.id}"><i style="background-image:url('${esc(o.img)}')"></i><b>${esc(o.name)}</b><p><span>${esc(stv[o.st]||o.st||'')}</span></p></div>`;
+const mn=m=>{const a=m.attributes,r=(m.relationships||[]).find(x=>x.type=='cover_art'),o={id:m.id,name:mt(a.title),img:th(r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',260),ra:r&&r.attributes?`https://uploads.mangadex.org/covers/${m.id}/${r.attributes.fileName}.256.jpg`:'',desc:mt(a.description),st:a.status,year:a.year||'',tags:(a.tags||[]).map(t=>t.attributes.name.en).filter(Boolean).slice(0,5)};MM[o.id]=o;return o};
+const mc=o=>`<div class="pc" data-mg="${o.id}"><i>${pic(o.img,o.ra)}</i><b>${esc(o.name)}</b><p><span>${esc(stv[o.st]||o.st||'')}</span></p></div>`;
 async function mlist(off){const u=`/manga?limit=24&offset=${off}&includes[]=cover_art&availableTranslatedLanguage[]=${ml}${CR}`+(mq?`&title=${encodeURIComponent(mq)}`:`&order[${mo}]=desc`);return(await MJ(u)).data.map(mn)}
 async function mangaView(){
   topbar('MangaDEX');mp=0;
@@ -345,7 +352,7 @@ async function mmore(){
   catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=merr()}}
 function openManga(id){
   const o=curM=MM[id],el=$('#det');cdir='desc';CH=[];el.classList.add('on');el.scrollTop=0;el.onscroll=null;
-  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(o.img.replace('.256.','.512.'))}" alt=""></div>
+  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(th(o.ra.replace('.256.','.512.'),480))}" data-o="${esc(o.ra.replace('.256.','.512.'))}" onerror="this.onerror=null;this.src=this.dataset.o" alt=""></div>
   <div class="di" style="margin-top:0"><h1 style="font-size:22px">${esc(o.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(stv[o.st]||o.st||'')}</span>${o.year?'<span>•</span><span>'+o.year+'</span>':''}${o.tags.length?'<span>•</span><span>'+esc(o.tags.join(', '))+'</span>':''}</div><div class="cta" id="mcta" style="margin-top:12px"></div><p class="dd" id="dd">${esc(o.desc)||'Chưa có mô tả.'}</p><button class="mo" data-md>Chi tiết hơn</button></div><div id="chl"><div class="sk"></div></div>`;
   loadCh(id)}
 async function loadCh(id){
@@ -373,7 +380,7 @@ async function sbody(){
   try{sres=await find(sq);rs()}catch(e){b.innerHTML=err()}}
 function rs(){
   const a=sres.filter(i=>sf=='all'||(sf=='one'?/full|1\/1/i.test(i.sub):!/full|1\/1/i.test(i.sub)));
-  $('#sb').innerHTML=`<div class="chips">${[['all','Kết quả hàng đầu'],['ser','Phim bộ'],['one','Phim lẻ']].map(([k,t])=>`<button data-sf="${k}" class="${sf==k?'on':''}">${t}</button>`).join('')}</div>`+(a.length?a.map(it=>`<div class="sr" data-k="${key(it)}"><i style="background-image:url('${esc(it.cov)}')"></i><div><b>${esc(it.name)}</b><small>${esc(it.sub||it.year)}</small><br><small>${esc(it.lang)}</small></div>${I('more',20)}</div>`).join(''):`<div class="emp"><h3>Không có kết quả cho “${esc(sq)}”</h3><p>Thử từ khóa khác hoặc đổi nguồn phim.</p></div>`)}
+  $('#sb').innerHTML=`<div class="chips">${[['all','Kết quả hàng đầu'],['ser','Phim bộ'],['one','Phim lẻ']].map(([k,t])=>`<button data-sf="${k}" class="${sf==k?'on':''}">${t}</button>`).join('')}</div>`+(a.length?a.map(it=>`<div class="sr" data-k="${key(it)}"><i>${pic(it.cov,it.rb)}</i><div><b>${esc(it.name)}</b><small>${esc(it.sub||it.year)}</small><br><small>${esc(it.lang)}</small></div>${I('more',20)}</div>`).join(''):`<div class="emp"><h3>Không có kết quả cho “${esc(sq)}”</h3><p>Thử từ khóa khác hoặc đổi nguồn phim.</p></div>`)}
 
 /* ---------- DETAIL ---------- */
 let D,CI,sI=0,eI=0;
@@ -384,7 +391,7 @@ async function openDet(it){
   const h=hist().filter(x=>key(x)!=key(it));h.unshift(it);S('hist',h.slice(0,40));
   sI=0;eI=0;const st=D.rate?Math.round(D.rate/2):0;
   el.innerHTML=`<div class="top" id="dtop" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span></div>
-  <div class="dh" style="background-image:url('${esc(it.img)}')"></div>
+  <div class="dh" style="background-image:url('${esc(it.big||it.img)}')"></div>
   <div class="di"><h1>${esc(it.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(it.year||D.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${D.cats.length?'<span>•</span><span>'+esc(D.cats.slice(0,4).join(', '))+'</span>':''}</div>
   ${D.rate?`<div class="st" style="justify-content:center"><b>${'★'.repeat(st)}${'☆'.repeat(5-st)}</b><span>Trung bình: <b style="font-size:11px;letter-spacing:0;color:#fff">${D.rate.toFixed(1)}</b>${D.votes?' ('+D.votes+')':''}</span></div>`:''}
   <div class="ac"><button data-sv="${key(it)}" id="sv2">${I(hasK(it)?'bm':'plus',22)}Danh sách</button><button data-fv="${key(it)}">${I(isF(it)?'heartf':'heart',22)}Yêu thích</button><button data-share>${I('share',22)}Chia sẻ</button></div>
@@ -484,6 +491,7 @@ document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value
 document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   if(e.target.id=='imp')f.text().then(impData);
   if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
+addEventListener('scroll',()=>{if(tab=='home')$('#top').classList.toggle('s',scrollY>300)},{passive:true});
 render();
 if(SESS&&cloud())pull().then(c=>c&&render());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SESS&&cloud())pull().then(c=>c&&render())});
