@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<meta name="referrer" content="no-referrer">
 <title>AniViet</title>
 <link rel="preconnect" href="https://wsrv.nl"><link rel="dns-prefetch" href="https://phimimg.com"><link rel="dns-prefetch" href="https://uploads.mangadex.org">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,6 +139,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .lk{display:flex;align-items:center;gap:22px;margin:12px 0;font-size:11px;color:#ddd}
 .lk span{display:flex;align-items:center;gap:6px}.lk .sp{margin-left:auto}
 .pi .dd{-webkit-line-clamp:2}
+.alt{display:flex;gap:8px;margin:14px 0 0}.alt a,.alt button{flex:1;text-align:center;border:1px solid var(--or);color:var(--or);border-radius:3px;padding:10px 6px;font-size:12px;font-weight:700;text-decoration:none}
 .nx{font-size:14px;font-weight:700;margin:22px 0 10px}
 .al{display:block;margin:12px auto;color:var(--or);font-size:11px;font-weight:700}
 #sh{z-index:40}
@@ -215,7 +215,7 @@ async function pull(){if(!cloud()||!SESS)return false;const c=R0('cur');if(!c)re
 let src=G('src')||'kk',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('wl')||[],last=()=>G('last')||{};
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
-const pic=(s,o)=>`<img loading="lazy" decoding="async" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
+const pic=(s,o)=>`<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
 const norm=i=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src};M[key(it)]=it;return it};
 async function list(p=1,sort,y){
   if(src=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(norm);
@@ -427,6 +427,7 @@ function play(si,ei){
   <div class="pi"><div class="sn">${esc(CI.name)}</div><h1>${esc(epn(e.name))} – ${esc(CI.name)}</h1><div class="mt"><span class="bd">${esc(CI.year||'HD')}</span><span>•</span><span>${esc(CI.lang)}</span></div>
   <div class="lk"><span>${I('up',22)}${D.views?Math.round(D.views/1000)+'K':'Thích'}</span><span>${I('dn',22)}</span><span class="sp">${I('dl',22)}</span>${I('more',22)}</div>
   <p class="dd o" style="-webkit-line-clamp:2;display:-webkit-box">${esc(D.desc)}</p>
+  <div class="alt">${e.embed?`<a href="${esc(e.embed)}" target="_blank" rel="noopener">Mở trình phát ngoài</a>`:''}<button data-alt>${CI.src=='nc'?'Thử nguồn KKPhim':'Thử nguồn NguonC'}</button></div>
   ${nx?`<div class="nx">Tập tiếp theo</div><div class="er" style="padding:0" data-ep="${ei+1}"><div class="th" style="background-image:url('${esc(CI.cov)}')">${I('play',16)}<s>${esc(CI.time||'')}</s></div><div class="x"><b>${esc(nx.name.match(/^\d+$/)?(+nx.name)+'. Tập '+nx.name:nx.name)}</b><p><span>${esc(CI.lang)}</span>${I('dl',20)}</p></div></div>`:''}
   <button class="al" data-pc>Tất cả các tập</button></div>`;
   if(hls){hls.destroy();hls=null}V=$('#v');if(!V)return;
@@ -439,11 +440,17 @@ function play(si,ei){
   $('#rg').oninput=ev=>{if(V.duration)V.currentTime=ev.target.value/1000*V.duration};
   $('#vw').onclick=ev=>{if(ev.target.closest('button,input'))return;$('#ct').classList.toggle('h');poke()};poke()}
 function poke(){clearTimeout(hide);hide=setTimeout(()=>{const c=$('#ct');if(c&&V&&!V.paused)c.classList.add('h')},3000)}
+async function altSrc(){
+  const to=CI.src=='nc'?'kk':'nc',keep=src,ei=eI,nm=CI.name;let it;
+  try{src=to;const r=await find(nm);it=r.find(x=>x.name.trim().toLowerCase()==nm.trim().toLowerCase())||r[0]}catch(e){}finally{src=keep}
+  if(!it){alert('Không tìm thấy phim này ở nguồn '+(to=='kk'?'KKPhim':'NguonC'));return}
+  closePl();await openDet(it);
+  if(D&&D.servers.length&&D.servers[0].eps.length)play(0,Math.min(ei,D.servers[0].eps.length-1))}
 function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on');setTimeout(()=>{if(!$('#pl').classList.contains('on'))$('#pl').innerHTML=''},400);if($('#det').classList.contains('on'))eps()}
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -467,6 +474,7 @@ document.addEventListener('click',e=>{
   if(d.lo!==undefined){W0('cur',null);SESS=null;try{localStorage.removeItem('sess')}catch(e){}return render()}
   if(d.sync!==undefined){t.textContent='Đang đồng bộ…';pull().then(()=>push()).then(()=>{alert(SYNC.err?'Lỗi: '+SYNC.err:'Đã sao lưu lên đám mây');render()});return}
   if(d.fv){const it=M[d.fv],l=G('fav')||[],i=l.findIndex(x=>key(x)==d.fv);i<0?l.unshift(it):l.splice(i,1);S('fav',l);t.innerHTML=I(i<0?'heartf':'heart',22)+'Yêu thích';return}
+  if(d.alt!==undefined)return altSrc();
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
   if(d.ml){ml=d.ml;return mangaView()}
