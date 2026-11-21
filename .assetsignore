@@ -1,0 +1,7 @@
+wrangler.jsonc
+.assetsignore
+mangadex-proxy.js
+README.md
+.git
+.wrangler
+node_modules
