@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AniViet">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>AniViet</title>
 <link rel="preconnect" href="https://wsrv.nl"><link rel="dns-prefetch" href="https://phimimg.com"><link rel="dns-prefetch" href="https://uploads.mangadex.org">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -302,7 +309,7 @@ async function simView(){
 let at='fav',am='in',tmpAv;
 function acc(){
   topbar('Tài khoản');const p=prof(),cu=R0('cur');let b='';
-  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['all','kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='all'?'Cả hai nguồn':x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu&&SESS?`<div class="row2"><span>Đồng bộ đám mây</span><button data-sync>Đồng bộ ngay</button></div>`:''}${cloud()?'':`<p class="nt" style="padding:12px">Đồng bộ nhiều thiết bị cần điền cấu hình Firebase ở đầu tệp index.html.</p>`}${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
+  if(at=='st')b=`<h2>Nguồn phim</h2><div class="chips">${['all','kk','nc'].map(x=>`<button data-src="${x}" class="${src==x?'on':''}">${x=='all'?'Cả hai nguồn':x=='kk'?'KKPhim':'NguonC'}</button>`).join('')}</div><h2>Ứng dụng</h2><div class="row2"><span>Thêm vào màn hình chính</span><button data-inst>Cách làm</button></div><h2>Sao lưu</h2><div class="row2"><span>Xuất dữ liệu ra tệp</span><button data-exp>Xuất</button></div><div class="row2"><span>Khôi phục từ tệp</span><label class="up" style="padding:0">Nhập<input type="file" id="imp" accept="application/json" hidden></label></div>${cu&&SESS?`<div class="row2"><span>Đồng bộ đám mây</span><button data-sync>Đồng bộ ngay</button></div>`:''}${cloud()?'':`<p class="nt" style="padding:12px">Đồng bộ nhiều thiết bị cần điền cấu hình Firebase ở đầu tệp index.html.</p>`}${cu?`<div class="row2"><span>Đang đăng nhập: @${esc(cu)}</span><button data-lo>Đăng xuất</button></div>`:''}`;
   else if(at=='mh'){const L=mh();b=L.length?`<div class="row2"><span>${L.length} truyện đã đọc</span><button data-clm>Xóa lịch sử</button></div><div class="grid" style="margin-top:14px">${L.map(mhc).join('')}</div>`:`<div class="emp"><h3>Chưa có lịch sử đọc</h3><p>Những truyện bạn đọc ở MangaDEX sẽ hiện ở đây.</p></div>`}
   else{const L=at=='fav'?G('fav')||[]:hist();
     b=(at=='hs'&&L.length?`<div class="row2"><span>${L.length} phim đã xem</span><button data-clr>Xóa lịch sử</button></div>`:'')+(L.length?`<div class="grid" style="margin-top:14px">${L.map(pc).join('')}</div>`:`<div class="emp"><h3>${at=='fav'?'Chưa có phim yêu thích':'Chưa có lịch sử xem'}</h3><p>${at=='fav'?'Nhấn ♡ Yêu thích ở trang phim để lưu vào đây.':'Những phim bạn xem sẽ hiện ở đây.'}</p></div>`)}
@@ -472,7 +479,7 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-inst],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -500,6 +507,7 @@ document.addEventListener('click',e=>{
   if(d.cpo!==undefined)return openCp();
   if(d.cpc!==undefined)return $('#cp').classList.remove('on');
   if(d.cp!==undefined){$('#cp').classList.remove('on');return readCh(+d.cp)}
+  if(d.inst!==undefined)return inst();
   if(d.alt!==undefined)return altSrc();
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
@@ -530,6 +538,12 @@ document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value
 document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   if(e.target.id=='imp')f.text().then(impData);
   if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
+let DP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e});
+function inst(){
+  if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)return alert('Ứng dụng đã được thêm vào màn hình chính rồi.');
+  if(DP){DP.prompt();DP=null;return}
+  alert('iPhone/iPad (Safari): bấm nút Chia sẻ ở thanh dưới, kéo xuống chọn "Thêm vào MH chính", rồi bấm Thêm.\n\nAndroid (Chrome): bấm menu ⋮ rồi chọn "Thêm vào màn hình chính" hoặc "Cài đặt ứng dụng".')}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 addEventListener('scroll',()=>{if(tab=='home')$('#top').classList.toggle('s',scrollY>300)},{passive:true});
 render();
 if(SESS&&cloud())pull().then(c=>c&&render());
