@@ -35,6 +35,8 @@ nav button.on{color:var(--or)}
 .top>*{pointer-events:auto}.top.s{background:#000}
 .lg{width:30px;height:30px;border-radius:50%;border:4px solid var(--or);border-right-color:transparent;position:relative;margin-right:auto}
 .lg::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--or)}
+.dtop{position:sticky;top:0;left:auto;right:auto;max-width:none;margin:0 0 calc(-54px - env(safe-area-inset-top,0px));width:100%}
+.dtop .ttl{padding-left:0;padding-right:40px}
 .ttl{font-weight:700;font-size:16px;text-align:center;flex:1;padding-left:86px}
 .top .av.on{border-color:var(--or)}
 /* hero */
@@ -173,6 +175,15 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .rbar span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rbar button{display:flex;padding:4px}.rbar button:disabled{opacity:.3}
 #cp{z-index:36}.cr.cur b{color:var(--or)}
+#rd.two{overflow:hidden;background:#000}
+#rd.two .rbar{position:absolute;left:0;right:0;top:0;background:#000d}
+.spw{position:relative;width:100%;height:var(--H,100vh);background:#000}
+.sp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sp.rtl{flex-direction:row-reverse}
+.sp img{max-width:50%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.zn{position:absolute;top:0;bottom:0;z-index:1}.zn.l{left:0;width:35%}.zn.m{left:35%;width:30%}.zn.r{right:0;width:35%}
+.pgn{position:absolute;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font-size:12px;color:#aaa;z-index:2;pointer-events:none}
+.rmb{font-size:12px;font-weight:700;color:var(--or);padding:4px 10px!important;white-space:nowrap;border:1px solid var(--or);border-radius:14px}
 #rp img{display:block;width:100%;min-height:320px;background:#0b0b0c}
 .rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
 .rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
@@ -220,7 +231,9 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
   .cr{padding:15px 24px}.cr b{font-size:15px}
   .mh img{max-width:220px}
   .pi{padding:18px 24px}.pi h1{font-size:18px}
-  .rbar{padding-left:20px;padding-right:20px;font-size:15px}
+  .rbar{padding-left:20px;padding-right:20px;font-size:15px;gap:12px}
+  #rd{max-width:none;box-shadow:none}
+  #rd #rp{max-width:900px;margin:0 auto}
 }
 @media(prefers-reduced-motion:reduce){.hs,.ov{transition:none}.sg b.on i{animation-duration:.01s}}
 </style>
@@ -430,7 +443,7 @@ async function mmore(){
   catch(e){$('#app .sk')?.remove();$('#mm').innerHTML=merr()}}
 function openManga(id){
   const o=curM=MM[id],el=$('#det');cdir='desc';CH=[];el.classList.add('on');el.scrollTop=0;el.onscroll=null;
-  el.innerHTML=`<div class="top" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(mdi(o.ra.replace('.256.','.512.')))}" data-o="${esc(o.ra.replace('.256.','.512.'))}" onerror="this.onerror=null;this.src=this.dataset.o" alt=""></div>
+  el.innerHTML=`<div class="top dtop" style="background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="mh"><div class="mb" style="background-image:url('${esc(o.img)}')"></div><img src="${esc(mdi(o.ra.replace('.256.','.512.')))}" data-o="${esc(o.ra.replace('.256.','.512.'))}" onerror="this.onerror=null;this.src=this.dataset.o" alt=""></div>
   <div class="di" style="margin-top:0"><h1 style="font-size:22px">${esc(o.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(stv[o.st]||o.st||'')}</span>${o.year?'<span>•</span><span>'+o.year+'</span>':''}${o.tags.length?'<span>•</span><span>'+esc(o.tags.join(', '))+'</span>':''}</div><div class="cta" id="mcta" style="margin-top:12px"></div><p class="dd" id="dd">${esc(o.desc)||'Chưa có mô tả.'}</p><button class="mo" data-md>Chi tiết hơn</button></div><div id="chl"><div class="sk"></div></div>`;
   loadCh(id)}
 async function loadCh(id){
@@ -447,12 +460,33 @@ function openCp(){
   const el=$('#cp');el.classList.add('on');
   el.innerHTML=`<div class="sbar"><button data-cpc aria-label="Đóng">${I('x')}</button><b>Chọn chương</b><span style="margin-left:auto;color:var(--mu);font-size:12px;font-weight:400">${CH.length} chương</span></div>`+CH.map(c=>`<div class="cr ${c.i==CHi?'cur':''}" data-cp="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div></div>`).join('');
   setTimeout(()=>{const x=el.querySelector('.cur');if(x)x.scrollIntoView({block:'center'})},80)}
+const isTab=()=>innerWidth>=700&&innerHeight>=480;
+let PG=[],PGP=[],SP=0,rmode=R0('rmode')||'two',rdir=R0('rdir')||'rtl';
+const pmode=()=>isTab()&&rmode=='two';
+function rbarHTML(){
+  const i=CHi,c=CH[i],t=isTab();
+  return `<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span>${t?`<button class="rmb" data-rm>${rmode=='two'?'Trang đôi':'Cuộn'}</button>${rmode=='two'?`<button class="rmb" data-rdr>${rdir=='rtl'?'Phải→Trái':'Trái→Phải'}</button>`:''}<button data-rfs aria-label="Toàn màn hình">${I('fs',20)}</button>`:''}<button data-rp ${i>=CH.length-1?'disabled':''} aria-label="Chương trước">${I('cl',22)}</button><button data-rn ${i<=0?'disabled':''} aria-label="Chương sau">${I('cr',22)}</button><button data-cpo aria-label="Chọn chương">${I('more',22)}</button></div>`}
+const pim=k=>`<img referrerpolicy="no-referrer" src="${esc(PG[k])}" ${MDP?`data-p="${esc(PGP[k])}" onerror="this.onerror=null;this.src=this.dataset.p"`:''} alt="">`;
+const spreads=()=>{const o=[[0]];for(let i=1;i<PG.length;i+=2)o.push(i+1<PG.length?[i,i+1]:[i]);return o};
+function drawSpread(){
+  const S2=spreads(),sp=S2[SP],el=$('#rsp');if(!sp||!el)return;
+  el.className='sp '+(rdir=='rtl'?'rtl':'ltr')+(sp.length==1?' one':'');
+  el.innerHTML=sp.map(pim).join('');
+  $('#pgn').textContent=(sp.length==2?(sp[0]+1)+'–'+(sp[1]+1):sp[0]+1)+' / '+PG.length;
+  const nx=S2[SP+1];if(nx)nx.forEach(k=>{const m=new Image();m.src=PG[k]})}
+function pnext(){const n=spreads().length;if(SP<n-1){SP++;drawSpread()}else if(CHi>0)readCh(CHi-1)}
+function pprev(){if(SP>0){SP--;drawSpread()}else if(CHi<CH.length-1)readCh(CHi+1)}
+function renderRd(){
+  const el=$('#rd'),i=CHi,paged=pmode();el.classList.toggle('two',paged);el.scrollTop=0;
+  el.innerHTML=rbarHTML()+(paged?`<div class="spw"><div id="rsp" class="sp"></div><div class="zn l" data-zl></div><div class="zn m" data-zm></div><div class="zn r" data-zr></div><div id="pgn" class="pgn"></div></div>`
+    :`<div id="rp">${PG.map((u,k)=>pim(k).replace('<img ','<img loading="lazy" onload="this.style.minHeight=0" ')).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`);
+  if(paged)drawSpread();rbarPoke()}
 async function readCh(i){
-  const c=CH[i];if(!c)return;CHi=i;saveRead(c);const el=$('#rd'),bar=`<div class="rbar"><button data-rcl aria-label="Đóng">${I('cd',26)}</button><span>${esc(curM.name)} · ${esc(chl(c))}</span><button data-rp ${i>=CH.length-1?'disabled':''} aria-label="Chương trước">${I('cl',22)}</button><button data-rn ${i<=0?'disabled':''} aria-label="Chương sau">${I('cr',22)}</button><button data-cpo aria-label="Chọn chương">${I('more',22)}</button></div>`;
-  el.classList.add('on');el.scrollTop=0;el.innerHTML=bar+'<div class="sk" style="height:70vh"></div>';
-  try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl;
-    el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" ${MDP?`data-p="${esc(mdi(B+'/data-saver/'+h+'/'+f))}" onerror="this.onerror=null;this.src=this.dataset.p"`:''} alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
-  catch(e){el.innerHTML=bar+merr()}rbarPoke()}
+  const c=CH[i];if(!c)return;CHi=i;saveRead(c);const el=$('#rd');
+  el.classList.add('on');el.classList.remove('two');el.scrollTop=0;el.innerHTML=rbarHTML()+'<div class="sk" style="height:70vh"></div>';
+  try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl,big=isTab(),L=big?d.chapter.data:d.chapter.dataSaver,q=big?'data':'data-saver';
+    PG=L.map(f=>`${B}/${q}/${h}/${f}`);PGP=PG.map(u=>mdi(u));SP=0;renderRd()}
+  catch(e){el.innerHTML=rbarHTML()+merr();rbarPoke()}}
 /* ---------- SEARCH ---------- */
 let sq='',sf='all',sres=[],stm;
 function openSearch(){const el=$('#sr');el.classList.add('on');
@@ -470,11 +504,11 @@ function rs(){
 let D,CI,sI=0,eI=0;
 async function openDet(it){
   CI=it;const el=$('#det');el.classList.add('on');el.scrollTop=0;
-  el.innerHTML=`<div class="sk" style="height:70vh;margin:0"></div><div class="top" style="position:absolute;background:none;color:#fff"><button data-dc>${I('x')}</button><span class="ttl"></span></div>`;
-  try{D=await detail(it)}catch(e){el.innerHTML=`<div class="top" style="position:absolute"><button data-dc>${I('x')}</button></div>`+err();return}
+  el.innerHTML=`<div class="top dtop" style="background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div><div class="sk" style="height:70vh;margin:0"></div>`;
+  try{D=await detail(it)}catch(e){el.innerHTML=`<div class="top dtop" style="background:none"><button data-dc aria-label="Đóng">${I('x')}</button></div>`+err();return}
   const h=hist().filter(x=>key(x)!=key(it));h.unshift(it);S('hist',h.slice(0,40));
   sI=0;eI=0;const st=D.rate?Math.round(D.rate/2):0;
-  el.innerHTML=`<div class="top" id="dtop" style="position:fixed;max-width:480px;background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span></div>
+  el.innerHTML=`<div class="top dtop" id="dtop" style="background:none"><button data-dc aria-label="Đóng">${I('x')}</button><span class="ttl" id="dtt" style="opacity:0">${esc(it.name)}</span></div>
   <div class="dh" style="background-image:url('${esc(hb(it))}')"></div>
   <div class="di"><h1>${esc(it.name)}</h1><div class="mt" style="justify-content:center"><span class="bd">${esc(it.year||D.year||'HD')}</span><span>•</span><span>${esc(it.lang)}</span>${D.cats.length?'<span>•</span><span>'+esc(D.cats.slice(0,4).join(', '))+'</span>':''}</div>
   ${D.rate?`<div class="st" style="justify-content:center"><b>${'★'.repeat(st)}${'☆'.repeat(5-st)}</b><span>Trung bình: <b style="font-size:11px;letter-spacing:0;color:#fff">${D.rate.toFixed(1)}</b>${D.votes?' ('+D.votes+')':''}</span></div>`:''}
@@ -529,7 +563,7 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-msr],[data-inst],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-rm],[data-rdr],[data-zl],[data-zr],[data-rfs],[data-msr],[data-inst],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -559,6 +593,11 @@ document.addEventListener('click',e=>{
   if(d.cp!==undefined){$('#cp').classList.remove('on');return readCh(+d.cp)}
   if(d.inst!==undefined)return inst();
   if(d.msr!==undefined){scrollTo({top:0});const q=$('#mq');if(q)q.focus();return}
+  if(d.rm!==undefined){rmode=rmode=='two'?'scroll':'two';W0('rmode',rmode);return renderRd()}
+  if(d.rdr!==undefined){rdir=rdir=='rtl'?'ltr':'rtl';W0('rdir',rdir);return renderRd()}
+  if(d.zl!==undefined)return rdir=='rtl'?pnext():pprev();
+  if(d.zr!==undefined)return rdir=='rtl'?pprev():pnext();
+  if(d.rfs!==undefined){const e=$('#rd'),f=e.requestFullscreen||e.webkitRequestFullscreen;if(f)f.call(e);else alert('Safari chưa hỗ trợ toàn màn hình ở đây. Hãy dùng Thêm vào màn hình chính để đọc toàn màn hình.');return}
   if(d.alt!==undefined)return altSrc();
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
@@ -567,7 +606,7 @@ document.addEventListener('click',e=>{
   if(d.cs!==undefined){cdir=cdir=='desc'?'asc':'desc';return drawCh()}
   if(d.ch!==undefined)return readCh(+d.ch);
   if(d.rf!==undefined)return readCh(CH.length-1);
-  if(d.rcl!==undefined){$('#rd').classList.remove('on');if(curM&&$('#chl')&&CH.length)drawCh();return}
+  if(d.rcl!==undefined){if(document.fullscreenElement)document.exitFullscreen();$('#rd').classList.remove('on');if(curM&&$('#chl')&&CH.length)drawCh();return}
   if(d.rp!==undefined)return readCh(CHi+1);
   if(d.rn!==undefined)return readCh(CHi-1);
   if(d.yr!==undefined){yr=d.yr;return simView()}
@@ -589,11 +628,15 @@ document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value
 document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   if(e.target.id=='imp')f.text().then(impData);
   if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
-document.addEventListener('click',e=>{if(!e.target.closest('#rp'))return;const b=$('#rd .rbar');if(!b)return;clearTimeout(rt);b.classList.toggle('h');if(!b.classList.contains('h'))rt=setTimeout(()=>b.classList.add('h'),5000)});
+document.addEventListener('click',e=>{if(!e.target.closest('#rp,[data-zm]'))return;const b=$('#rd .rbar');if(!b)return;clearTimeout(rt);b.classList.toggle('h');if(!b.classList.contains('h'))rt=setTimeout(()=>b.classList.add('h'),5000)});
 function fit(){
   const t=matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>1,w=innerWidth,Z=(t&&w>1300)?Math.min(w/1024,2.5):1,r=document.documentElement;
   r.style.zoom=Z==1?'':Z;r.style.setProperty('--W',(w/Z)+'px');r.style.setProperty('--H',(innerHeight/Z)+'px')}
 fit();addEventListener('resize',fit);
+let sx=null;
+document.addEventListener('touchstart',e=>{sx=e.target.closest('#rd.two')?e.touches[0].clientX:null},{passive:true});
+document.addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>60){if(dx>0)rdir=='rtl'?pnext():pprev();else rdir=='rtl'?pprev():pnext()}},{passive:true});
+document.addEventListener('keydown',e=>{if(!$('#rd.two.on'))return;if(e.key=='ArrowLeft')rdir=='rtl'?pnext():pprev();if(e.key=='ArrowRight')rdir=='rtl'?pprev():pnext()});
 let DP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e});
 function inst(){
   if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)return alert('Ứng dụng đã được thêm vào màn hình chính rồi.');
