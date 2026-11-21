@@ -169,6 +169,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .cr.rdd b{color:var(--mu)}
 .cr b{display:block;font-weight:500;font-size:13px}.cr small{color:var(--mu);font-size:11px}
 .rbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:#000e;font-weight:700;font-size:13px}
+.rbar{transition:transform .25s,opacity .25s}.rbar.h{transform:translateY(-110%);opacity:0;pointer-events:none}
 .rbar span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rbar button{display:flex;padding:4px}.rbar button:disabled{opacity:.3}
 #cp{z-index:36}.cr.cur b{color:var(--or)}
@@ -262,14 +263,14 @@ const ico=(a,b)=>`${a?'':''}`;
 
 /* ---------- HOME ---------- */
 let hi=0,hl=[],tm;
-function topbar(title){$('#top').className='top'+(title?' s':'');const r=`<button data-sr aria-label="Tìm kiếm">${I('search')}</button><button data-t="acc" aria-label="Tài khoản">${avh(prof(),28,tab=='acc'?'on':'')}</button>`;$('#top').innerHTML=title?`<div class="ttl">${title}</div>${r}`:`<div class="lg"></div>${r}`}
+function topbar(title){$('#top').className='top'+(title?' s':'');const r=`<button data-${tab=='mg'?'msr':'sr'} aria-label="Tìm kiếm">${I('search')}</button><button data-t="acc" aria-label="Tài khoản">${avh(prof(),28,tab=='acc'?'on':'')}</button>`;$('#top').innerHTML=title?`<div class="ttl">${title}</div>${r}`:`<div class="lg"></div>${r}`}
 async function home(){
   topbar();$('#app').innerHTML=sk;
   try{
     const [a,b,c]=await Promise.all([list(1),list(1,'view'),list(3)]);
     hl=a.slice(0,6);hi=0;const h=hist(),sp=c[1]||b[0];
     $('#app').innerHTML=`<div class="hero" id="hero">${hl.map((it,i)=>`<div class="hs ${i?'':'on'}" ${i<2?`style="background-image:url('${esc(it.big||it.img)}')"`:`data-bg="${esc(it.big||it.img)}"`}></div>`).join('')}<div class="hc" id="hc"></div></div>
-    <div class="chips sc">${[['all','Cả hai nguồn'],['kk','KKPhim'],['nc','NguonC']].map(([k,t])=>`<button data-src="${k}" class="${src==k?'on':''}">${t}</button>`).join('')}</div><h2 style="padding-top:4px">Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
+    <h2>Xem nhiều</h2><div class="rail">${b.map(pc).join('')}</div>
     <h2>Mới cập nhật</h2><div class="rail">${a.map(lc).join('')}</div>
     ${h.length?`<h2>Tiếp tục xem</h2><div class="rail">${h.map(lc).join('')}</div>`:''}
     <div class="spot" id="spot"><i data-k="${key(sp)}" style="background-image:url('${esc(sp.cov)}')"></i><h3>${esc(sp.name)}</h3><div class="ln"></div><div class="mt"><span class="bd">${esc(sp.year||'HD')}</span><span>${esc(sp.lang)}</span></div><p class="ds" id="spd"></p>${cta(sp)}</div>
@@ -393,6 +394,8 @@ function drawCh(){
   const L=cdir=='desc'?CH:[...CH].reverse(),hm=mh().find(x=>x.id==curM.id),hx=hm?CH.findIndex(c=>c.id==hm.ch.id):-1,rd=new Set((hm&&hm.read)||[]);
   $('#mcta').innerHTML=CH.length?(hx>=0?`<button class="go" data-ch="${hx}">${I('play',18)}Đọc tiếp ${esc(chl(CH[hx]))}</button><button class="bm" data-rf style="width:auto;padding:0 14px;font-size:12px;font-weight:700">Từ đầu</button>`:`<button class="go" data-rf>${I('play',18)}Đọc từ đầu</button>`):'';
   $('#chl').innerHTML=CH.length?`<div class="sv" style="text-transform:none"><b>${CH.length} chương</b><span style="flex:1"></span><button data-cs style="color:var(--or);font-size:13px;font-weight:700">${cdir=='desc'?'Mới nhất ▾':'Cũ nhất ▴'}</button></div>`+L.map(c=>`<div class="cr ${rd.has(c.id)?'rdd':''}" data-ch="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div>${I('play',14)}</div>`).join(''):`<div class="emp"><h3>Chưa có chương ${ml=='vi'?'tiếng Việt':'tiếng Anh'}</h3><p>Thử đổi ngôn ngữ ở trang MangaDEX.</p></div>`}
+let rt;
+function rbarPoke(){const b=$('#rd .rbar');if(!b)return;b.classList.remove('h');clearTimeout(rt);rt=setTimeout(()=>{const x=$('#rd .rbar');if(x)x.classList.add('h')},5000)}
 function openCp(){
   const el=$('#cp');el.classList.add('on');
   el.innerHTML=`<div class="sbar"><button data-cpc aria-label="Đóng">${I('x')}</button><b>Chọn chương</b><span style="margin-left:auto;color:var(--mu);font-size:12px;font-weight:400">${CH.length} chương</span></div>`+CH.map(c=>`<div class="cr ${c.i==CHi?'cur':''}" data-cp="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div></div>`).join('');
@@ -402,7 +405,7 @@ async function readCh(i){
   el.classList.add('on');el.scrollTop=0;el.innerHTML=bar+'<div class="sk" style="height:70vh"></div>';
   try{const d=await MJ(`/at-home/server/${c.id}`),h=d.chapter.hash,B=d.baseUrl;
     el.innerHTML=bar+`<div id="rp">${d.chapter.dataSaver.map(f=>`<img loading="lazy" referrerpolicy="no-referrer" src="${B}/data-saver/${h}/${f}" ${MDP?`data-p="${esc(mdi(B+'/data-saver/'+h+'/'+f))}" onerror="this.onerror=null;this.src=this.dataset.p"`:''} alt="" onload="this.style.minHeight=0">`).join('')}</div><div class="rnav"><button data-rp ${i>=CH.length-1?'disabled':''}>‹ Chương trước</button><button data-rn ${i<=0?'disabled':''}>Chương sau ›</button></div>`}
-  catch(e){el.innerHTML=bar+merr()}}
+  catch(e){el.innerHTML=bar+merr()}rbarPoke()}
 /* ---------- SEARCH ---------- */
 let sq='',sf='all',sres=[],stm;
 function openSearch(){const el=$('#sr');el.classList.add('on');
@@ -479,7 +482,7 @@ function closePl(){if(hls){hls.destroy();hls=null}$('#pl').classList.remove('on'
 
 /* ---------- EVENTS ---------- */
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-inst],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
+  const t=e.target.closest('[data-k],[data-t],[data-go],[data-sv],[data-sr],[data-sc],[data-sf],[data-lt],[data-more],[data-yr],[data-src],[data-ed],[data-au],[data-at],[data-fv],[data-shc],[data-auth],[data-am],[data-pa],[data-ps],[data-exp],[data-lo],[data-sync],[data-msr],[data-inst],[data-cp],[data-cpc],[data-cpo],[data-clm],[data-alt],[data-mg],[data-mo],[data-ml],[data-mmore],[data-cs],[data-ch],[data-rf],[data-rcl],[data-rp],[data-rn],[data-clr],[data-dc],[data-ep],[data-pc],[data-pp],[data-sk],[data-fs],[data-dtab],[data-md],[data-share]');if(!t)return;
   const d=t.dataset;
   if(e.target.closest('[data-menu]')&&d.k)return;
   if(d.k)return openDet(M[d.k]);
@@ -508,6 +511,7 @@ document.addEventListener('click',e=>{
   if(d.cpc!==undefined)return $('#cp').classList.remove('on');
   if(d.cp!==undefined){$('#cp').classList.remove('on');return readCh(+d.cp)}
   if(d.inst!==undefined)return inst();
+  if(d.msr!==undefined){scrollTo({top:0});const q=$('#mq');if(q)q.focus();return}
   if(d.alt!==undefined)return altSrc();
   if(d.mg)return openManga(d.mg);
   if(d.mo){mo=d.mo;mq='';return mangaView()}
@@ -538,6 +542,7 @@ document.addEventListener('change',e=>{if(e.target.id=='svr'){sI=+e.target.value
 document.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   if(e.target.id=='imp')f.text().then(impData);
   if(e.target.id=='fi'){const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,128,128);tmpAv=c.toDataURL('image/jpeg',.8);$('#pv').innerHTML=avh({av:tmpAv},96);URL.revokeObjectURL(u)};im.src=u}});
+document.addEventListener('click',e=>{if(!e.target.closest('#rp'))return;const b=$('#rd .rbar');if(!b)return;clearTimeout(rt);b.classList.toggle('h');if(!b.classList.contains('h'))rt=setTimeout(()=>b.classList.add('h'),5000)});
 let DP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e});
 function inst(){
   if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)return alert('Ứng dụng đã được thêm vào màn hình chính rồi.');
