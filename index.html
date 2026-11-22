@@ -17,7 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
 <style>
-:root{--bg:#000;--card:#1a1b1f;--ln:#2a2b30;--tx:#fff;--mu:#a0a0a0;--or:#ff640a}
+:root{--bg:#000;--card:#1a1b1f;--ln:#2a2b30;--tx:#e8e8ec;--mu:#a0a0a0;--or:#ff640a}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{background:#000;color:var(--tx);font:14px/1.4 "DM Sans",system-ui,-apple-system,sans-serif;overscroll-behavior:none}
 button,input,select{font:inherit;color:inherit;border:0;background:none;outline:0}
@@ -27,7 +27,7 @@ svg.ic{display:block;flex:none}
 .ov.on{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.8,.2,1)}
 #pl{z-index:30}
 nav{position:fixed;bottom:0;left:0;right:0;margin:0 auto;max-width:480px;display:flex;background:#0d0d0f;border-top:1px solid #1b1b1f;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;color:#c9c9c9}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;color:#8f8f94;font-weight:400}
 nav button.on{color:var(--or)}
 .av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;border:2px solid #333;flex:none}
 /* top bar */
@@ -61,6 +61,7 @@ nav button.on{color:var(--or)}
 /* rails */
 h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 .rail{display:flex;gap:8px;overflow-x:auto;padding:0 12px;scrollbar-width:none;scroll-snap-type:x proximity}
+.rail{scroll-padding:0 12px}
 .rail::-webkit-scrollbar{display:none}
 .pc{flex:0 0 min(29vw,134px);min-width:0;scroll-snap-align:start;cursor:pointer}
 .pc i,.lc i,.sr i{position:relative}
@@ -196,7 +197,9 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
   .lg{width:24px;height:24px;border-width:3px}.lg::after{inset:3px}
   nav{top:0;bottom:0;left:0;right:auto;margin:0;max-width:none;width:var(--nw);flex-direction:column;border-top:0;border-right:1px solid #1b1b1f;padding:6px 0 6px env(safe-area-inset-left,0px)}
   nav button{flex:1;padding:4px 0;font-size:10px;gap:1px;justify-content:center}
-  nav button svg{width:20px;height:20px}
+  nav{background:#09090b}
+  nav button{color:#77777c}nav button.on{color:var(--or)}
+  nav button svg{width:20px;height:20px;stroke-width:1.6}
   .hero{height:min(88vh,340px);min-height:0;margin-top:-44px}
   .hero::after{background:linear-gradient(90deg,rgba(0,0,0,.9) 0,rgba(0,0,0,.3) 55%,transparent 80%),linear-gradient(transparent 60%,#000 98%),linear-gradient(rgba(0,0,0,.5),transparent 25%)}
   .hc{right:auto;max-width:55%;padding:0 18px 4px}
@@ -205,7 +208,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
   .mt{margin-bottom:4px}.cta{margin-bottom:8px;max-width:340px}
   .go,.bm{height:38px;font-size:13px}.bm{width:38px}
   .sg{justify-content:flex-start;padding:0}
-  h2{padding:12px 18px 6px}.rail{padding:0 18px}
+  h2{padding:12px 18px 6px}.rail{padding:0 18px;scroll-padding:0 18px}
   .pc{flex:0 0 min(13vw,112px)}.lc{flex:0 0 min(28vw,220px)}
   .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));padding:0 18px}
   .grid.l{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
@@ -219,7 +222,14 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 }
 /* ---------- iPad / màn hình rộng ---------- */
 @media(min-width:700px) and (min-height:480px){
-  body{font-size:15px}
+  body{font-size:15px;-webkit-font-smoothing:antialiased}
+  svg.ic{stroke-width:1.6}
+  h2,.hc h1,.di h1,.pn b,.emp h3,.pi h1,.spot h3,.ttl,.sbar{font-weight:500}
+  .tabs button,.dt button,.chips button{font-weight:500}
+  .pc b,.lc b,.er .x b,.sr b,.cr b{font-weight:400}
+  .emp p,.emp{color:#a8a8ae}
+  nav button{color:#85858a;font-weight:400}nav button.on{color:var(--or)}
+  nav{background:#0c0c0ff2}
   #app{max-width:1100px}
   .top{max-width:1100px;padding-left:28px;padding-right:28px;gap:24px}
   .ttl{padding-left:96px;font-size:18px}
@@ -236,7 +246,7 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
   .go{height:50px;font-size:15px}.bm{height:50px;width:50px}
   .sg{justify-content:flex-start;padding:0}.sg b{max-width:56px}
   h2{font-size:19px;padding:26px 28px 12px}
-  .rail{padding:0 28px;gap:14px}
+  .rail{padding:0 28px;gap:14px;scroll-padding:0 28px}
   .pc{flex:0 0 min(calc(var(--W,1024px)*.16),168px)}
   .lc{flex:0 0 min(calc(var(--W,1024px)*.30),300px)}
   .pc b,.lc b{font-size:13px}.pc p,.lc p{font-size:12px}
