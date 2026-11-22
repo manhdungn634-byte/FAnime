@@ -187,6 +187,36 @@ h2{font-size:14px;font-weight:700;padding:16px 12px 8px}
 #rp img{display:block;width:100%;min-height:320px;background:#0b0b0c}
 .rnav{display:flex;gap:8px;padding:12px calc(12px) calc(16px + env(safe-area-inset-bottom,0px))}
 .rnav button{flex:1;background:var(--or);color:#000;font-weight:700;padding:12px;border-radius:3px}.rnav button:disabled{opacity:.3}
+/* ---------- điện thoại xoay ngang ---------- */
+@media(orientation:landscape) and (max-height:479px){
+  :root{--nw:calc(64px + env(safe-area-inset-left,0px))}
+  #app{max-width:none;margin:0 0 0 var(--nw);padding:0 env(safe-area-inset-right,0px) 16px 0;min-height:100vh}
+  .top{left:var(--nw);right:0;margin:0;max-width:none;padding:calc(6px + env(safe-area-inset-top,0px)) calc(14px + env(safe-area-inset-right,0px)) 6px 14px;gap:16px}
+  .ttl{padding-left:60px;font-size:15px}
+  .lg{width:24px;height:24px;border-width:3px}.lg::after{inset:3px}
+  nav{top:0;bottom:0;left:0;right:auto;margin:0;max-width:none;width:var(--nw);flex-direction:column;border-top:0;border-right:1px solid #1b1b1f;padding:6px 0 6px env(safe-area-inset-left,0px)}
+  nav button{flex:1;padding:4px 0;font-size:10px;gap:1px;justify-content:center}
+  nav button svg{width:20px;height:20px}
+  .hero{height:min(88vh,340px);min-height:0;margin-top:-44px}
+  .hero::after{background:linear-gradient(90deg,rgba(0,0,0,.9) 0,rgba(0,0,0,.3) 55%,transparent 80%),linear-gradient(transparent 60%,#000 98%),linear-gradient(rgba(0,0,0,.5),transparent 25%)}
+  .hc{right:auto;max-width:55%;padding:0 18px 4px}
+  .hc h1{font-size:22px;margin-bottom:4px}
+  .ds{font-size:11px;min-height:0;-webkit-line-clamp:2;margin-bottom:8px}
+  .mt{margin-bottom:4px}.cta{margin-bottom:8px;max-width:340px}
+  .go,.bm{height:38px;font-size:13px}.bm{width:38px}
+  .sg{justify-content:flex-start;padding:0}
+  h2{padding:12px 18px 6px}.rail{padding:0 18px}
+  .pc{flex:0 0 min(13vw,112px)}.lc{flex:0 0 min(28vw,220px)}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));padding:0 18px}
+  .grid.l{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  .spot{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;padding:16px 18px 0}.spot i{grid-row:1/8}
+  .ov{max-width:none}
+  .dh{height:min(48vh,220px)}.di{margin-top:-60px}
+  .vw{aspect-ratio:auto;height:100vh;margin-top:0}
+  .ys{top:calc(38px + env(safe-area-inset-top,0px));padding:12px 18px 6px}
+  .page{padding-top:calc(48px + env(safe-area-inset-top,0px))}
+  .sb{padding-left:18px;padding-right:18px}.pf,.row2{padding-left:18px;padding-right:18px}.bx{margin-left:18px;margin-right:18px}
+}
 /* ---------- iPad / màn hình rộng ---------- */
 @media(min-width:700px) and (min-height:480px){
   body{font-size:15px}
@@ -288,7 +318,7 @@ let src=G('src')||'all',tab='home',M={},DC={},hist=()=>G('hist')||[],wl=()=>G('w
 const key=it=>it.src+':'+it.slug;
 const th=(u,w)=>u?'https://wsrv.nl/?url='+encodeURIComponent(u)+'&w='+w+'&output=webp&q=75':'';
 const pic=(s,o)=>`<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(s)}"${o?` data-o="${esc(o)}" onerror="this.onerror=null;this.src=this.dataset.o"`:''} alt="">`;
-const hb=it=>(innerWidth>=700&&innerHeight>=480)?(it.bigc||it.cov||it.big||it.img):(it.big||it.img);
+const hb=it=>innerWidth>=640?(it.bigc||it.cov||it.big||it.img):(it.big||it.img);
 const norm=(i,sn)=>{const it={slug:i.slug,name:i.name,orig:i.origin_name||i.original_name||'',sub:i.episode_current||i.current_episode||'',lang:i.lang||i.language||'Vietsub',year:i.year||'',time:i.time||'',cats:(i.category||[]).map(c=>c.name),img:th(img(i.thumb_url||i.poster_url),260),cov:th(img(i.poster_url||i.thumb_url),480),big:th(img(i.thumb_url||i.poster_url),720),bigc:th(img(i.poster_url||i.thumb_url),1280),ra:img(i.thumb_url||i.poster_url),rb:img(i.poster_url||i.thumb_url),src:sn||src};M[key(it)]=it;return it};
 async function listS(sn,p=1,sort,y){
   if(sn=='kk')return(await J(`${KK}/v1/api/danh-sach/hoat-hinh?page=${p}&limit=24${sort?'&sort_field='+sort:''}${y?'&year='+y:''}`)).data.items.map(i=>norm(i,'kk'));
@@ -460,7 +490,7 @@ function openCp(){
   const el=$('#cp');el.classList.add('on');
   el.innerHTML=`<div class="sbar"><button data-cpc aria-label="Đóng">${I('x')}</button><b>Chọn chương</b><span style="margin-left:auto;color:var(--mu);font-size:12px;font-weight:400">${CH.length} chương</span></div>`+CH.map(c=>`<div class="cr ${c.i==CHi?'cur':''}" data-cp="${c.i}"><div><b>${esc(chl(c))}</b><small>${esc(c.g)}${c.d?(c.g?' • ':'')+new Date(c.d).toLocaleDateString('vi-VN'):''}</small></div></div>`).join('');
   setTimeout(()=>{const x=el.querySelector('.cur');if(x)x.scrollIntoView({block:'center'})},80)}
-const isTab=()=>innerWidth>=700&&innerHeight>=480;
+const isTab=()=>innerWidth>=640;
 let PG=[],PGP=[],SP=0,rmode=R0('rmode')||'two',rdir=R0('rdir')||'rtl';
 const pmode=()=>isTab()&&rmode=='two';
 function rbarHTML(){
