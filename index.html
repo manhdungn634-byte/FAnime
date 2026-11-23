@@ -229,18 +229,30 @@ nav button:active svg,nav button:active .av{transform:scale(1.2)}
 .rmb{background:rgba(255,255,255,.08)}
 .pc i,.lc i{border-radius:14px}.spot i{border-radius:18px}.er .th{border-radius:12px}.mh img{border-radius:14px}.sr i{border-radius:12px}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){nav,.top.s,.fx,.rbar,.sbar,.ys{background:#0c0c0f}}
+/* ---------- iPhone: thanh nhỏ, đứng yên ---------- */
+@media(max-width:699px){
+  nav{max-width:300px;border-radius:26px;padding:5px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  nav button{padding:9px 0}
+  nav button svg,nav .av{width:21px;height:21px}
+  nav.mini{transform:none;opacity:1}
+  nav.pr .nb{transform:none}
+  nav button:active svg,nav button:active .av{transform:none}
+  #app{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
 /* ---------- điện thoại xoay ngang ---------- */
 @media(orientation:landscape) and (max-height:479px){
-  :root{--nw:calc(62px + env(safe-area-inset-left,0px))}
+  :root{--nw:calc(56px + env(safe-area-inset-left,0px))}
   #app{max-width:none;margin:0 0 0 var(--nw);padding:0 env(safe-area-inset-right,0px) 16px 0;min-height:100vh}
   .top{left:var(--nw);right:0;margin:0;max-width:none;padding:calc(6px + env(safe-area-inset-top,0px)) calc(14px + env(safe-area-inset-right,0px)) 6px 14px;gap:16px}
   .ttl{padding-left:60px;font-size:15px}
   .lg{width:24px;height:24px;border-width:3px}.lg::after{inset:3px}
-  nav{top:8px;bottom:8px;left:calc(8px + env(safe-area-inset-left,0px));right:auto;margin:0;max-width:none;width:46px;flex-direction:column;border-radius:23px;padding:5px 3px}
+  nav{top:8px;bottom:8px;left:calc(8px + env(safe-area-inset-left,0px));right:auto;margin:0;max-width:none;width:40px;flex-direction:column;border-radius:20px;padding:4px 2px}
+  nav.pr .nb{transform:none}
+  nav button:active svg,nav button:active .av{transform:none}
   nav button{flex:1;padding:3px 0;font-size:8.5px;gap:1px;justify-content:center;border-radius:18px}
   nav .nl{display:none}
-  nav button svg{width:21px;height:21px;stroke-width:1.6}
-  nav .av{width:21px;height:21px}
+  nav button svg{width:19px;height:19px;stroke-width:1.6}
+  nav .av{width:19px;height:19px}
   .hero{height:min(88vh,340px);min-height:0;margin-top:-44px}
   .hero::after{background:linear-gradient(90deg,rgba(0,0,0,.9) 0,rgba(0,0,0,.3) 55%,transparent 80%),linear-gradient(transparent 60%,#000 98%),linear-gradient(rgba(0,0,0,.5),transparent 25%)}
   .hc{right:auto;max-width:55%;padding:0 18px 4px}
